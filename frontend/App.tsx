@@ -1,12 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Navigation from './src/components/navigation/Navbar';
+import FirebaseRecipes from './firebase';
 
 export default function App() {
   return (
+    <>
+     <Navigation />
     <View style={styles.container}>
+     <FirebaseRecipes /> 
       <Text>Hello MindfulMorsels!</Text>
       <StatusBar style="auto" />
     </View>
+    </>
   );
 }
 
@@ -16,5 +22,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop:60,
   },
 });
