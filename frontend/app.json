@@ -26,7 +26,8 @@
       "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "useWebApp": false
     },
     "plugins": [
       "@react-native-firebase/app"
