@@ -15,9 +15,9 @@ const styles = StyleSheet.create({
     height: 30,
   },
   title: {
-    marginTop: 70,
+    marginTop: 50,
+    fontFamily: "Poppins-Bold",
     fontSize: 20,
-    fontWeight: "bold",
     color: "#737373",
   },
   logo: {
