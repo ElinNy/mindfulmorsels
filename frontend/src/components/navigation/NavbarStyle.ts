@@ -9,13 +9,18 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: "#FCF5EB",
   },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   icon: {
     marginTop: 50,
     width: 30,
     height: 30,
   },
   title: {
-    marginTop: 50,
+    marginLeft: 10, 
+    marginTop: 60,
     fontFamily: "Poppins-Bold",
     fontSize: 20,
     color: "#737373",
@@ -57,5 +62,6 @@ const styles = StyleSheet.create({
     color: "#545454",
   },
 });
+
 
 export default styles;

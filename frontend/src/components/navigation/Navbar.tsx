@@ -39,13 +39,16 @@ export default function Navigation() {
 
   return (
     <View style={styles.navbar}>
-      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Home")}
+        style={styles.logoContainer}
+      >
         <Image
           style={styles.logo}
           source={require("../../../assets/icons/salad.png")}
         />
+        <Text style={styles.title}>Mindful 🌿 Morsels</Text>
       </TouchableOpacity>
-      <Text style={styles.title}>Mindful 🌿 Morsels</Text>
 
       {/* Visa antingen login-ikon eller hamburgar-meny */}
       {user ? (
@@ -73,7 +76,7 @@ export default function Navigation() {
               style={styles.menuItem}
               onPress={() => {
                 setDropdownVisible(false);
-                navigation.navigate("Recipes"); 
+                navigation.navigate("Recipes");
               }}
             >
               <Text style={styles.menuText}>Test Recipes</Text>
