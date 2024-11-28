@@ -4,7 +4,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "./navigationTypes";
-import { auth } from "../../../firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import styles from "./NavbarStyle";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
@@ -69,6 +69,15 @@ export default function Navigation() {
         <View style={styles.dropdown}>
           <View style={styles.leftMenu}>
             {/* Vänstra delen av menyn */}
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                setDropdownVisible(false);
+                navigation.navigate("Recipes"); 
+              }}
+            >
+              <Text style={styles.menuText}>Test Recipes</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem}>
               <Text style={styles.menuText}>Generate Recipes</Text>
             </TouchableOpacity>

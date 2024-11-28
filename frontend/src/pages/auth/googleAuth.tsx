@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Button, View, Text, StyleSheet } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
-import { auth } from "../../../firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import Constants from "expo-constants";
 
 export default function GoogleLoginScreen() {

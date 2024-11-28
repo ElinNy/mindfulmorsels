@@ -1,6 +1,6 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { auth } from "../../firebaseConfig";
+import { auth } from "../firebase/firebaseConfig";
 
 // Logga ut användaren om 7 dagar har gått
 export async function checkSession() {

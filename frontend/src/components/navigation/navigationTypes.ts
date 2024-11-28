@@ -3,6 +3,7 @@ export type RootStackParamList = {
     Login: undefined;
     GenerateRecipes: undefined;
     LikedRecipes: undefined;   
-    MyRecipes: undefined;       
+    MyRecipes: undefined;   
+    Recipes: undefined;     
   };
   

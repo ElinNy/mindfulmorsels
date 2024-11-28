@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../../../firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../components/navigation/navigationTypes";

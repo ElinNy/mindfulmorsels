@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
+import { auth } from "../firebase/firebaseConfig";
 import {styles} from "./styles/HomeScreenStyle";
 
 export default function HomeScreen() {

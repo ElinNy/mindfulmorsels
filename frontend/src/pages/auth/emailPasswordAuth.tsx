@@ -12,7 +12,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "../../../firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../components/navigation/navigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
