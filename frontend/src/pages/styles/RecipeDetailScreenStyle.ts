@@ -2,9 +2,8 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#F8F8F8",
     padding: 16,
+    backgroundColor: "#F8F8F8",
   },
   center: {
     flex: 1,
@@ -18,11 +17,18 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     resizeMode: "cover",
   },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   title: {
     fontSize: 24,
     fontFamily: "Poppins-Bold",
     color: "#333",
-    marginBottom: 10,
+    flex: 1,
+    marginRight: 10,
   },
   sectionTitle: {
     fontSize: 18,
