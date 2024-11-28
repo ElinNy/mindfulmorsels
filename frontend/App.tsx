@@ -8,6 +8,7 @@ import { checkSession } from "./src/utils/firebaseUtils";
 import Navigation from "./src/components/navigation/Navbar";
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
+import RecipeDetailsScreen from "./src/pages/RecipeDetailScreen";
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,7 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Recipes" component={RecipeListScreen} />
+        <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

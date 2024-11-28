@@ -11,8 +11,14 @@ import {
 } from "react-native";
 import { fetchRecipes } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeListScreenStyle";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../components/navigation/navigationTypes";
+
+type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
 export default function RecipeListScreen() {
+  const navigation = useNavigation<NavigationProp>();
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +41,9 @@ export default function RecipeListScreen() {
     } finally {
       setLoading(false);
     }
+  };
+  const handleRecipePress = (recipeId: number) => {
+    navigation.navigate("RecipeDetails", { recipeId });
   };
 
   return (
@@ -74,10 +83,12 @@ export default function RecipeListScreen() {
           data={recipes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image source={{ uri: item.image }} style={styles.image} />
-              <Text style={styles.title}>{item.title}</Text>
-            </View>
+            <TouchableOpacity onPress={() => handleRecipePress(item.id)}>
+              <View style={styles.card}>
+                <Image source={{ uri: item.image }} style={styles.image} />
+                <Text style={styles.title}>{item.title}</Text>
+              </View>
+            </TouchableOpacity>
           )}
           contentContainerStyle={styles.listContent}
         />

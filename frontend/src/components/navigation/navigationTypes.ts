@@ -5,5 +5,6 @@ export type RootStackParamList = {
     LikedRecipes: undefined;   
     MyRecipes: undefined;   
     Recipes: undefined;     
+    RecipeDetails: { recipeId: number };
   };
   

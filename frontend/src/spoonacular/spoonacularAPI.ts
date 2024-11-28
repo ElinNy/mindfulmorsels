@@ -32,3 +32,13 @@ export const searchRecipes = async (query: string): Promise<any> => {
     throw error;
   }
 };
+
+export const getRecipeDetails = async (recipeId: number): Promise<any> => {
+  try {
+    const response = await apiClient.get(`/recipes/${recipeId}/information`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
+    throw error;
+  }
+};
