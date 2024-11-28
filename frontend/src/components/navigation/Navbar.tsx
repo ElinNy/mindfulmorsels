@@ -79,9 +79,6 @@ export default function Navigation() {
                 navigation.navigate("Recipes");
               }}
             >
-              <Text style={styles.menuText}>Test Recipes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
               <Text style={styles.menuText}>Generate Recipes</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem}>
