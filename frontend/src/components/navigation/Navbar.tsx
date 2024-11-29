@@ -26,6 +26,7 @@ export default function Navigation() {
       await signOut(auth);
       Alert.alert("Logged Out", "You have been logged out.");
       setDropdownVisible(false);
+      navigation.navigate("Home");
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert("Error", error.message || "Failed to log out.");
