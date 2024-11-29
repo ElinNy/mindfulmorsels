@@ -84,7 +84,13 @@ export default function Navigation() {
             <TouchableOpacity style={styles.menuItem}>
               <Text style={styles.menuText}>Liked Recipes</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                setDropdownVisible(false);
+                navigation.navigate("MyRecipes");
+              }}
+            >
               <Text
                 style={[
                   styles.menuText,

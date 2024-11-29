@@ -9,6 +9,7 @@ import Navigation from "./src/components/navigation/Navbar";
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 import RecipeDetailsScreen from "./src/pages/RecipeDetailScreen";
+import MyRecipesScreen from "./src/pages/MyRecipesScreen";
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Recipes" component={RecipeListScreen} />
         <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
+        <Stack.Screen name="MyRecipes" component={MyRecipesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

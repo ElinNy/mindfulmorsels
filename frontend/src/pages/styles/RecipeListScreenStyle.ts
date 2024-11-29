@@ -52,8 +52,8 @@ export const styles = StyleSheet.create({
   card: {
     width: "100%",
     marginBottom: 16,
-    borderRadius: 10,
-    backgroundColor: "#FCF5EB",
+    borderRadius: 20,
+    backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -67,6 +67,7 @@ export const styles = StyleSheet.create({
     width: "80%",
     height: 300,
     resizeMode: "contain",
+    borderRadius: 20,
   },
   title: {
     padding: 15,
