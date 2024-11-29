@@ -6,33 +6,27 @@ import {
   ActivityIndicator,
   ScrollView,
   Alert,
-  StyleSheet,
 } from "react-native";
 import { getRecipeDetails } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeDetailScreenStyle";
 import BookmarkIcon from "../components/bookmark/BookmarkIcon";
-import {
-  addBookmark,
-  removeBookmark,
-  isBookmarked,
-} from "../utils/firebaseUtils";
+import { useBookmarks } from "../hooks/useBookmarks";
 
 export default function RecipeDetailsScreen({ route }: any) {
   const { recipeId } = route.params;
   const [recipe, setRecipe] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isBookmarkedState, setIsBookmarkedState] = useState<boolean>(false);
-  const [bookmarkLoading, setBookmarkLoading] = useState<boolean>(false);
+  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
+
+  const isBookmarked = bookmarkedRecipes.some(
+    (bookmark) => bookmark.recipeId === recipeId
+  );
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const details = await getRecipeDetails(recipeId);
         setRecipe(details);
-
-        // Är receptet bookmärkt?
-        const favorited = await isBookmarked(recipeId);
-        setIsBookmarkedState(favorited);
       } catch (error) {
         console.error("Error fetching recipe details:", error);
         Alert.alert("Fel", "Kunde inte hämta receptdetaljer.");
@@ -43,26 +37,6 @@ export default function RecipeDetailsScreen({ route }: any) {
 
     fetchDetails();
   }, [recipeId]);
-
-  const handleBookmarkToggle = async () => {
-    setBookmarkLoading(true);
-    try {
-      if (isBookmarkedState) {
-        await removeBookmark(recipeId);
-        setIsBookmarkedState(false);
-        Alert.alert("Borttagen", "Receptet har tagits bort från dina bokmärken.");
-      } else {
-        await addBookmark(recipe);
-        setIsBookmarkedState(true);
-        Alert.alert("Sparad", "Receptet har lagts till dina bokmärken.");
-      }
-    } catch (error) {
-      console.error("Error toggling bookmark:", error);
-      Alert.alert("Fel", "Kunde inte uppdatera bokmärket.");
-    } finally {
-      setBookmarkLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -87,17 +61,21 @@ export default function RecipeDetailsScreen({ route }: any) {
       <View style={styles.header}>
         <Text style={styles.title}>{recipe.title}</Text>
         <BookmarkIcon
-          isBookmarked={isBookmarkedState}
-          onPress={handleBookmarkToggle}
+          isBookmarked={isBookmarked}
+          onPress={() => toggleBookmark({
+            id: recipeId,
+            title: recipe.title,
+            image: recipe.image,
+          })}
         />
       </View>
-      <Text style={styles.sectionTitle}>Ingredienser:</Text>
+      <Text style={styles.sectionTitle}>Ingredients:</Text>
       {recipe.extendedIngredients.map((ingredient: any) => (
         <Text key={ingredient.id} style={styles.text}>
           - {ingredient.original}
         </Text>
       ))}
-      <Text style={styles.sectionTitle}>Instruktioner:</Text>
+      <Text style={styles.sectionTitle}>Instructions:</Text>
       <Text style={styles.text}>
         {recipe.instructions || "Inga instruktioner tillgängliga."}
       </Text>

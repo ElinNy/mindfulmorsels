@@ -4,16 +4,17 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  Image,
   TextInput,
-  TouchableOpacity,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { fetchRecipes } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeListScreenStyle";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
+import ListCard from "../components/listcard/ListCard";
+import { useBookmarks } from "../hooks/useBookmarks";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -23,6 +24,8 @@ export default function RecipeListScreen() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState<string>("");
+
+  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
 
   const handleSearch = async () => {
     if (query.trim() === "") {
@@ -41,9 +44,6 @@ export default function RecipeListScreen() {
     } finally {
       setLoading(false);
     }
-  };
-  const handleRecipePress = (recipeId: number) => {
-    navigation.navigate("RecipeDetails", { recipeId });
   };
 
   return (
@@ -83,12 +83,17 @@ export default function RecipeListScreen() {
           data={recipes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleRecipePress(item.id)}>
-              <View style={styles.card}>
-                <Image source={{ uri: item.image }} style={styles.image} />
-                <Text style={styles.title}>{item.title}</Text>
-              </View>
-            </TouchableOpacity>
+            <ListCard
+              title={item.title}
+              image={item.image}
+              isBookmarked={bookmarkedRecipes.some(
+                (bookmark) => bookmark.recipeId === item.id
+              )}
+              onBookmarkPress={() => toggleBookmark(item)}
+              onPress={() =>
+                navigation.navigate("RecipeDetails", { recipeId: item.id })
+              }
+            />
           )}
           contentContainerStyle={styles.listContent}
         />
