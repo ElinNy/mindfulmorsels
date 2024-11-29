@@ -2,14 +2,9 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#F8F8F8",
     padding: 16,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    marginBottom: 16,
-    alignItems: "center",
   },
   searchInput: {
     flex: 1,
@@ -17,13 +12,44 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: "#ccc",
-    marginRight: 8,
     backgroundColor: "#fff",
     fontFamily: "Poppins-Regular",
+    marginRight: 8,
+  },
+  pillContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 20,
+  },
+  pill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#3DA510",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  pillText: {
+    color: "#fff",
+    fontFamily: "Poppins-Regular",
+    marginRight: 8,
+  },
+  pillCloseButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pillCloseButtonText: {
+    color: "#fff",
+    fontSize: 12,
+    fontFamily: "Poppins-Bold",
   },
   searchButton: {
     paddingVertical: 10,
-    paddingHorizontal: 15,
     backgroundColor: "#FF6F61",
     borderRadius: 5,
     alignItems: "center",
@@ -32,6 +58,7 @@ export const styles = StyleSheet.create({
   searchButtonText: {
     color: "#fff",
     fontFamily: "Poppins-Bold",
+    fontSize: 16,
   },
   center: {
     flex: 1,
@@ -52,4 +79,64 @@ export const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 20,
   },
+  emptyText: {
+    fontSize: 16,
+    color: "#737373",
+    fontFamily: "Poppins-Regular",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  inputIcon: {
+     width: 30,
+     height: 30,
+    marginRight: 8, 
+  },
+  searchInputWithIcon: {
+    flex: 1,
+    padding: 10,
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+    color: "#333",
+  },
+  addButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "#3DA510",
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8, 
+  },
+  addButtonText: {
+    color: "#fff",
+    fontFamily: "Poppins-Bold",
+  },
+  welcomeTitle: {
+    marginTop: 20,
+    fontSize: 20,
+    fontFamily: "Poppins-Bold",
+    textAlign: "center",
+    color: "#545454",
+    marginBottom: 8,
+  },
+  welcomeText: {
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#545454",
+  },
+  
+  
 });
