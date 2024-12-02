@@ -7,10 +7,13 @@ import { styles } from "./styles/MyRecipesScreenStyle";
 import ListCard from "../components/listcard/ListCard";
 import { useBookmarks } from "../hooks/useBookmarks";
 
-type MyRecipesNavigationProp = StackNavigationProp<RootStackParamList, "MyRecipes">;
+type MyRecipesNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "MyRecipes"
+>;
 
 export default function MyRecipesScreen() {
-  const { bookmarkedRecipes, toggleBookmark } = useBookmarks(); 
+  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
   const navigation = useNavigation<MyRecipesNavigationProp>();
 
   if (!bookmarkedRecipes) {
@@ -37,11 +40,15 @@ export default function MyRecipesScreen() {
         keyExtractor={(item) => item.recipeId.toString()}
         renderItem={({ item }) => (
           <ListCard
+            recipeId={item.recipeId} 
             title={item.title}
             image={item.image}
-            isBookmarked={true} 
+            isBookmarked={true}
             onBookmarkPress={() => toggleBookmark(item)}
-            onPress={() => navigation.navigate("RecipeDetails", { recipeId: item.recipeId })}
+            onSharePress={() => console.log(`Sharing ${item.title}`)}
+            onPress={() =>
+              navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
+            }
           />
         )}
         contentContainerStyle={styles.flatListContent}

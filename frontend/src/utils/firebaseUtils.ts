@@ -82,3 +82,26 @@ export const isBookmarked = async (recipeId: number): Promise<boolean> => {
   const docSnap = await getDoc(bookmarkRef);
   return docSnap.exists();
 };
+
+
+
+export const shareRecipe = async (recipe: any): Promise<void> => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  try {
+    const sharedRecipeRef = doc(db, "sharedRecipes", recipe.recipeId.toString());
+    await setDoc(sharedRecipeRef, {
+      title: recipe.title,
+      image: recipe.image,
+      sharedBy: user.uid,
+      timestamp: Timestamp.fromDate(new Date()),
+    });
+    console.log("Recipe shared successfully!");
+  } catch (error) {
+    console.error("Error sharing recipe:", error);
+    throw error;
+  }
+};
