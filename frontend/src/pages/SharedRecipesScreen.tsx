@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { styles } from "./styles/SharedRecipesScreenStyle";
 import ListCard from "../components/listcard/ListCard";
 import { db } from "../firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import { useBookmarks } from "../hooks/useBookmarks";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../components/navigation/navigationTypes";
+import { useNavigation } from "@react-navigation/native";
 
+type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 export default function SharedRecipesScreen() {
+  const navigation = useNavigation<NavigationProp>();
+  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
   const [sharedRecipes, setSharedRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -14,12 +21,10 @@ export default function SharedRecipesScreen() {
       try {
         const sharedRecipesCollection = collection(db, "sharedRecipes");
         const snapshot = await getDocs(sharedRecipesCollection);
-
         const recipes = snapshot.docs.map((doc) => ({
           recipeId: doc.id,
           ...doc.data(),
         }));
-
         setSharedRecipes(recipes);
       } catch (error) {
         console.error("Error fetching shared recipes:", error);
@@ -50,7 +55,7 @@ export default function SharedRecipesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Shared Recipes</Text>
+      <Text style={styles.header}>Liked Recipes</Text>
       <FlatList
         data={sharedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}
@@ -59,10 +64,15 @@ export default function SharedRecipesScreen() {
             recipeId={item.recipeId}
             title={item.title}
             image={item.image}
-            isBookmarked={false}
-            onPress={() => console.log(`Navigating to recipe ${item.recipeId}`)}
-            onBookmarkPress={() => console.log("Bookmark pressed!")}
-            showShareIcon={false} // Dölj dela-knappen
+            isBookmarked={bookmarkedRecipes.some(
+              (bookmark) => bookmark.recipeId === item.recipeId
+            )}
+            onPress={() =>
+              navigation.navigate("RecipeDetails", { recipeId: item.recipeId }) // Använd recipeId istället för item.id
+            }
+            
+            onBookmarkPress={() => toggleBookmark(item)}
+            showShareIcon={false}
           />
         )}
         contentContainerStyle={styles.listContent}

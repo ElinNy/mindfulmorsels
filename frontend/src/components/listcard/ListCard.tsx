@@ -2,36 +2,43 @@ import React from "react";
 import { Text, Image, TouchableOpacity, View } from "react-native";
 import { styles } from "./ListCardStyle";
 import BookmarkIcon from "../bookmark/BookmarkIcon";
-import ShareRecipe from "../shareRecipe/ShareRecipe";
 
 interface ListCardProps {
   title: string;
   image: string;
-  recipeId: number;
   onPress: () => void;
   isBookmarked: boolean;
   onBookmarkPress: () => void;
   onSharePress?: () => void; 
   showShareIcon?: boolean; 
+  customStyle?: object;
+  recipeId?: number;
 }
 
 const ListCard: React.FC<ListCardProps> = ({
   title,
   image,
-  recipeId,
   onPress,
   isBookmarked,
   onBookmarkPress,
-  onSharePress = true,
+  onSharePress,
+  showShareIcon = true, 
+  customStyle,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.card}>
+    <TouchableOpacity onPress={onPress} style={[styles.card, customStyle]}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: image }} style={styles.image} />
-        {onSharePress && (
-          <View style={styles.shareIconContainer}>
-            <ShareRecipe recipe={{ recipeId, title, image }} />
-          </View>
+        {showShareIcon && onSharePress && (
+          <TouchableOpacity
+            style={styles.shareIconContainer}
+            onPress={onSharePress}
+          >
+            <Image
+              source={require("../../../assets/icons/upload.png")}
+              style={{ width: 20, height: 20 }}
+            />
+          </TouchableOpacity>
         )}
       </View>
       <View style={styles.titleContainer}>

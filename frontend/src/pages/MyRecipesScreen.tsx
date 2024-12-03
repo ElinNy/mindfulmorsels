@@ -6,6 +6,7 @@ import { RootStackParamList } from "../components/navigation/navigationTypes";
 import { styles } from "./styles/MyRecipesScreenStyle";
 import ListCard from "../components/listcard/ListCard";
 import { useBookmarks } from "../hooks/useBookmarks";
+import { useShareRecipe } from "../hooks/useShareRecipe";
 
 type MyRecipesNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -14,6 +15,7 @@ type MyRecipesNavigationProp = StackNavigationProp<
 
 export default function MyRecipesScreen() {
   const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
+  const { handleShareRecipe } = useShareRecipe();
   const navigation = useNavigation<MyRecipesNavigationProp>();
 
   if (!bookmarkedRecipes) {
@@ -40,12 +42,18 @@ export default function MyRecipesScreen() {
         keyExtractor={(item) => item.recipeId.toString()}
         renderItem={({ item }) => (
           <ListCard
-            recipeId={item.recipeId} 
+            recipeId={item.recipeId}
             title={item.title}
             image={item.image}
             isBookmarked={true}
             onBookmarkPress={() => toggleBookmark(item)}
-            onSharePress={() => console.log(`Sharing ${item.title}`)}
+            onSharePress={() =>
+              handleShareRecipe({
+                recipeId: item.recipeId,
+                title: item.title,
+                image: item.image,
+              })
+            }
             onPress={() =>
               navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
             }

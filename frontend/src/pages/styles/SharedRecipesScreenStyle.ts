@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontFamily: "Poppins-Bold",
-    color: "#333",
+    color: "#545454",
     marginBottom: 16,
     textAlign: "center",
   },

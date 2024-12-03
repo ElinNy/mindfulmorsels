@@ -16,11 +16,13 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import ListCard from "../components/listcard/ListCard";
 import { useBookmarks } from "../hooks/useBookmarks";
+import { useShareRecipe } from "../hooks/useShareRecipe";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
 export default function RecipeListScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { handleShareRecipe } = useShareRecipe(); 
   const [recipes, setRecipes] = useState<any[]>([]);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
@@ -51,7 +53,7 @@ export default function RecipeListScreen() {
 
     setLoading(true);
     setError(null);
-    setShowWelcomeText(false); 
+    setShowWelcomeText(false);
 
     try {
       const data = await fetchRecipes(ingredients.join(","));
@@ -136,6 +138,7 @@ export default function RecipeListScreen() {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <ListCard
+              recipeId={item.id}
               title={item.title}
               image={item.image}
               isBookmarked={bookmarkedRecipes.some(
@@ -144,6 +147,14 @@ export default function RecipeListScreen() {
               onBookmarkPress={() => toggleBookmark(item)}
               onPress={() =>
                 navigation.navigate("RecipeDetails", { recipeId: item.id })
+              }
+              showShareIcon={true}
+              onSharePress={() =>
+                handleShareRecipe({
+                  recipeId: item.id,
+                  title: item.title,
+                  image: item.image,
+                })
               }
             />
           )}
