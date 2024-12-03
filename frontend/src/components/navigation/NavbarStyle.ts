@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   title: {
-    marginLeft: 10, 
+    marginLeft: 10,
     marginTop: 60,
     fontFamily: "Poppins-Bold",
     fontSize: 20,
@@ -37,21 +37,35 @@ const styles = StyleSheet.create({
     width: 430,
     backgroundColor: "#FCF5EB",
     padding: 16,
-    shadowColor: "000",
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 1,
     elevation: 5,
     zIndex: 10,
+  },
+  displayNameContainer: {
+    paddingBottom: 5, 
+  },
+  displayName: {
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+    color: "#545454",
+    textAlign: "left",
+    marginLeft: 10,
+  },
+  menuRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10, 
   },
   leftMenu: {
     flexDirection: "column",
-    justifyContent: "flex-end",
   },
   rightMenu: {
-    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    marginTop:80,
   },
   menuItem: {
     paddingVertical: 10,
@@ -62,6 +76,5 @@ const styles = StyleSheet.create({
     color: "#545454",
   },
 });
-
 
 export default styles;

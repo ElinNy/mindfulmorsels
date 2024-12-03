@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./src/pages/HomeScreen";
 import LoginScreen from "./src/pages/auth/LoginScreen";
 import RecipeListScreen from "./src/pages/RecipeListScreen";
-import { checkSession } from "./src/utils/firebaseUtils";
-import Navigation from "./src/components/navigation/Navbar";
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 import RecipeDetailsScreen from "./src/pages/RecipeDetailScreen";
 import MyRecipesScreen from "./src/pages/MyRecipesScreen";
 import SharedRecipesScreen from "./src/pages/SharedRecipesScreen";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./src/firebase/firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Navigation from "./src/components/navigation/Navbar";
 
 const Stack = createStackNavigator();
 
@@ -20,11 +22,32 @@ export default function App() {
     "Poppins-Bold": require("./assets/fonts/Poppins-Bold.ttf"),
   });
 
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    checkSession();
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      try {
+        if (currentUser) {
+          console.log("User logged in:", currentUser.email);
+          setUser(currentUser);
+          await AsyncStorage.setItem("user", JSON.stringify(currentUser));
+        } else {
+          console.log("No user logged in.");
+          setUser(null);
+          await AsyncStorage.removeItem("user");
+        }
+      } catch (error) {
+        console.error("Error handling auth state:", error);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#FCF5EB" />
@@ -34,9 +57,9 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Navigation />
+      <Navigation user={user} />
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName={user ? "Home" : "Login"}
         screenOptions={{
           headerShown: false,
         }}

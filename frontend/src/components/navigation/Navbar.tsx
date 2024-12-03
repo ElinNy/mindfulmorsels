@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Text, View, Image, TouchableOpacity, Alert } from "react-native";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "./navigationTypes";
@@ -9,17 +9,13 @@ import styles from "./NavbarStyle";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-export default function Navigation() {
-  const [user, setUser] = useState<any>(null);
+interface NavbarProps {
+  user: any; 
+}
+
+export default function Navigation({ user }: NavbarProps) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const navigation = useNavigation<NavigationProp>();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return unsubscribe;
-  }, []);
 
   const handleLogout = async () => {
     try {
@@ -71,52 +67,61 @@ export default function Navigation() {
       {/* Dropdown-menyn */}
       {dropdownVisible && user && (
         <View style={styles.dropdown}>
-          <View style={styles.leftMenu}>
-            {/* Vänstra delen av menyn */}
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                setDropdownVisible(false);
-                navigation.navigate("Recipes");
-              }}
-            >
-              <Text style={styles.menuText}>Generate Recipes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                setDropdownVisible(false);
-                navigation.navigate("LikedRecipes"); 
-              }}
-            >
-              <Text style={styles.menuText}>Liked Recipes</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                setDropdownVisible(false);
-                navigation.navigate("MyRecipes");
-              }}
-            >
-              <Text
-                style={[
-                  styles.menuText,
-                  { color: "#FF6F61", fontWeight: "bold" },
-                ]}
+          {/* Welcome, displayName */}
+          {user?.displayName && (
+            <View style={styles.displayNameContainer}>
+              <Text style={styles.displayName}>
+                Welcome, {user.displayName}!
+              </Text>
+            </View>
+          )}
+          <View style={styles.menuRow}>
+            {/* Left Menu */}
+            <View style={styles.leftMenu}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setDropdownVisible(false);
+                  navigation.navigate("Recipes");
+                }}
               >
-                My Recipes
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <Text style={styles.menuText}>Generate Recipes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setDropdownVisible(false);
+                  navigation.navigate("LikedRecipes");
+                }}
+              >
+                <Text style={styles.menuText}>Liked Recipes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setDropdownVisible(false);
+                  navigation.navigate("MyRecipes");
+                }}
+              >
+                <Text
+                  style={[
+                    styles.menuText,
+                    { color: "#FF6F61", fontWeight: "bold" },
+                  ]}
+                >
+                  My Recipes
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-          {/* Högra delen av menyn */}
-          <View style={styles.rightMenu}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-              <Text style={[styles.menuText, { color: "#3DA510" }]}>
-                Logout
-              </Text>
-            </TouchableOpacity>
+            {/* Right Menu */}
+            <View style={styles.rightMenu}>
+              <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                <Text style={[styles.menuText, { color: "#3DA510" }]}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
