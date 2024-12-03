@@ -68,7 +68,7 @@ export default function SharedRecipesScreen() {
               (bookmark) => bookmark.recipeId === item.recipeId
             )}
             onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.recipeId }) // Använd recipeId istället för item.id
+              navigation.navigate("RecipeDetails", { recipeId: item.recipeId }) 
             }
             
             onBookmarkPress={() => toggleBookmark(item)}
