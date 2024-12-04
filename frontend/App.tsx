@@ -57,22 +57,25 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Navigation user={user} />
-      <Stack.Navigator
-        initialRouteName={user ? "Home" : "Login"}
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Recipes" component={RecipeListScreen} />
-        <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
-        <Stack.Screen name="MyRecipes" component={MyRecipesScreen} />
-        <Stack.Screen name="LikedRecipes" component={SharedRecipesScreen} />
-      </Stack.Navigator>
+      <View style={styles.appContainer}>
+        <Navigation user={user} />
+        <Stack.Navigator
+          initialRouteName={user ? "Home" : "Login"}
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Recipes" component={RecipeListScreen} />
+          <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
+          <Stack.Screen name="MyRecipes" component={MyRecipesScreen} />
+          <Stack.Screen name="LikedRecipes" component={SharedRecipesScreen} />
+        </Stack.Navigator>
+      </View>
     </NavigationContainer>
   );
+  
 }
 
 const styles = StyleSheet.create({
@@ -82,4 +85,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FCF5EB",
   },
+  appContainer: {
+    flex: 1,
+    backgroundColor: "#FCF5EB",
+    paddingTop: 10,
+  },
+  
 });

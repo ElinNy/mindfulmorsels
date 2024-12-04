@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, Image, TouchableOpacity, Alert } from "react-native";
+import { Text, View, Image, Alert, Pressable } from "react-native";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -10,7 +10,7 @@ import styles from "./NavbarStyle";
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 interface NavbarProps {
-  user: any; 
+  user: any;
 }
 
 export default function Navigation({ user }: NavbarProps) {
@@ -36,7 +36,7 @@ export default function Navigation({ user }: NavbarProps) {
 
   return (
     <View style={styles.navbar}>
-      <TouchableOpacity
+      <Pressable
         onPress={() => navigation.navigate("Home")}
         style={styles.logoContainer}
       >
@@ -45,29 +45,30 @@ export default function Navigation({ user }: NavbarProps) {
           source={require("../../../assets/icons/salad.png")}
         />
         <Text style={styles.title}>Mindful 🌿 Morsels</Text>
-      </TouchableOpacity>
+      </Pressable>
 
-      {/* Visa antingen login-ikon eller hamburgar-meny */}
       {user ? (
-        <TouchableOpacity onPress={toggleDropdown}>
+        <Pressable
+          onPress={toggleDropdown}
+          onHoverIn={() => setDropdownVisible(true)}
+          onHoverOut={() => setDropdownVisible(false)}
+        >
           <Image
             style={styles.icon}
             source={require("../../../assets/icons/hamburger.png")}
           />
-        </TouchableOpacity>
+        </Pressable>
       ) : (
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Pressable onPress={() => navigation.navigate("Login")}>
           <Image
             style={styles.icon}
             source={require("../../../assets/icons/login.png")}
           />
-        </TouchableOpacity>
+        </Pressable>
       )}
 
-      {/* Dropdown-menyn */}
       {dropdownVisible && user && (
         <View style={styles.dropdown}>
-          {/* Welcome, displayName */}
           {user?.displayName && (
             <View style={styles.displayNameContainer}>
               <Text style={styles.displayName}>
@@ -76,9 +77,8 @@ export default function Navigation({ user }: NavbarProps) {
             </View>
           )}
           <View style={styles.menuRow}>
-            {/* Left Menu */}
             <View style={styles.leftMenu}>
-              <TouchableOpacity
+              <Pressable
                 style={styles.menuItem}
                 onPress={() => {
                   setDropdownVisible(false);
@@ -86,8 +86,8 @@ export default function Navigation({ user }: NavbarProps) {
                 }}
               >
                 <Text style={styles.menuText}>Generate Recipes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.menuItem}
                 onPress={() => {
                   setDropdownVisible(false);
@@ -95,8 +95,8 @@ export default function Navigation({ user }: NavbarProps) {
                 }}
               >
                 <Text style={styles.menuText}>Liked Recipes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.menuItem}
                 onPress={() => {
                   setDropdownVisible(false);
@@ -111,16 +111,14 @@ export default function Navigation({ user }: NavbarProps) {
                 >
                   My Recipes
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
-
-            {/* Right Menu */}
             <View style={styles.rightMenu}>
-              <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+              <Pressable style={styles.menuItem} onPress={handleLogout}>
                 <Text style={[styles.menuText, { color: "#3DA510" }]}>
                   Logout
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>
