@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, Image, Alert, Pressable } from "react-native";
+import { Text, View, Image, Alert, TouchableOpacity } from "react-native";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -36,7 +36,7 @@ export default function Navigation({ user }: NavbarProps) {
 
   return (
     <View style={styles.navbar}>
-      <Pressable
+      <TouchableOpacity
         onPress={() => navigation.navigate("Home")}
         style={styles.logoContainer}
       >
@@ -45,26 +45,22 @@ export default function Navigation({ user }: NavbarProps) {
           source={require("../../../assets/icons/salad.png")}
         />
         <Text style={styles.title}>Mindful 🌿 Morsels</Text>
-      </Pressable>
+      </TouchableOpacity>
 
       {user ? (
-        <Pressable
-          onPress={toggleDropdown}
-          onHoverIn={() => setDropdownVisible(true)}
-          onHoverOut={() => setDropdownVisible(false)}
-        >
+        <TouchableOpacity onPress={toggleDropdown}>
           <Image
             style={styles.icon}
             source={require("../../../assets/icons/hamburger.png")}
           />
-        </Pressable>
+        </TouchableOpacity>
       ) : (
-        <Pressable onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Image
             style={styles.icon}
             source={require("../../../assets/icons/login.png")}
           />
-        </Pressable>
+        </TouchableOpacity>
       )}
 
       {dropdownVisible && user && (
@@ -78,7 +74,7 @@ export default function Navigation({ user }: NavbarProps) {
           )}
           <View style={styles.menuRow}>
             <View style={styles.leftMenu}>
-              <Pressable
+              <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => {
                   setDropdownVisible(false);
@@ -86,8 +82,8 @@ export default function Navigation({ user }: NavbarProps) {
                 }}
               >
                 <Text style={styles.menuText}>Generate Recipes</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => {
                   setDropdownVisible(false);
@@ -95,8 +91,8 @@ export default function Navigation({ user }: NavbarProps) {
                 }}
               >
                 <Text style={styles.menuText}>Liked Recipes</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => {
                   setDropdownVisible(false);
@@ -111,14 +107,14 @@ export default function Navigation({ user }: NavbarProps) {
                 >
                   My Recipes
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
             <View style={styles.rightMenu}>
-              <Pressable style={styles.menuItem} onPress={handleLogout}>
+              <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
                 <Text style={[styles.menuText, { color: "#3DA510" }]}>
                   Logout
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
