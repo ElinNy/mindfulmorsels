@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 1,
-    elevation: 5,
-    zIndex: 10,
-  },
+    elevation: 10, 
+    zIndex: 999, 
+  },  
   displayNameContainer: {
     paddingBottom: 5, 
   },
