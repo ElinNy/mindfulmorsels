@@ -27,7 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "useWebApp": false
+      "useWebApp": false,
+      "bundler": "metro"
     },
     "plugins": [
       "@react-native-firebase/app"
