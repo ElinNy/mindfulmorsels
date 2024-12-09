@@ -32,7 +32,7 @@ export default function Navigation({ user }: NavbarProps) {
 
   const toggleDropdown = () => {
     console.log("Hamburger icon clicked");
-    setDropdownVisible(!dropdownVisible);
+    setDropdownVisible((prev) => !prev);
   };
 
   return (
@@ -101,10 +101,7 @@ export default function Navigation({ user }: NavbarProps) {
                 }}
               >
                 <Text
-                  style={[
-                    styles.menuText,
-                    { color: "#FF6F61", fontWeight: "bold" },
-                  ]}
+                  style={[styles.menuText, { color: "#FF6F61", fontWeight: "bold" }]}
                 >
                   My Recipes
                 </Text>

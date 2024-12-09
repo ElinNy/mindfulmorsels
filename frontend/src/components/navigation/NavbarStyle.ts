@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 120,
     backgroundColor: "#FCF5EB",
+    position: "relative", 
   },
   logoContainer: {
     flexDirection: "row",
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 10, 
     zIndex: 999, 
+    borderRadius: 8,
   },  
   displayNameContainer: {
     paddingBottom: 5, 
@@ -66,6 +68,7 @@ const styles = StyleSheet.create({
   rightMenu: {
     alignItems: "flex-end",
     marginTop:80,
+    justifyContent: "flex-end",
   },
   menuItem: {
     paddingVertical: 10,
