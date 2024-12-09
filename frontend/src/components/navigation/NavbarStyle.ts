@@ -31,21 +31,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
-  dropdown: {
-    position: "absolute",
-    top: 120,
-    right: 0,
-    width: 430,
-    backgroundColor: "#FCF5EB",
-    padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 1,
-    elevation: 10, 
-    zIndex: 999, 
-    borderRadius: 8,
-  },  
+
   displayNameContainer: {
     paddingBottom: 5, 
   },
@@ -78,6 +64,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#545454",
   },
+  dropdown: {
+    position: "absolute",
+    top: 120,
+    right: 0,
+    width: 430,
+    backgroundColor: "#FCF5EB",
+    padding: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 1,
+    elevation: 10, 
+    zIndex: 999, 
+    borderRadius: 8,
+  },  
 });
 
 export default styles;
