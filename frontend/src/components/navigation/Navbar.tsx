@@ -31,6 +31,7 @@ export default function Navigation({ user }: NavbarProps) {
   };
 
   const toggleDropdown = () => {
+    console.log("Hamburger icon clicked");
     setDropdownVisible(!dropdownVisible);
   };
 
