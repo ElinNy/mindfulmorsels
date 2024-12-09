@@ -48,14 +48,14 @@ const DropdownMenu = ({ user, navigation, onLogout, closeDropdown }: DropdownMen
               navigation.navigate("MyRecipes");
             }}
           >
-            <Text style={[styles.menuText, { color: "#FF6F61", fontWeight: "bold" }]}>
+            <Text style={[styles.menuText, { color: "#3DA510", fontFamily: "Poppins-Bold" }]}>
               My Recipes
             </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.rightMenu}>
           <TouchableOpacity style={styles.menuItem} onPress={onLogout}>
-            <Text style={[styles.menuText, { color: "#3DA510" }]}>Logout</Text>
+            <Text style={[styles.menuText, { color: "#FF6F61",fontFamily: "Poppins-Bold" }]}>Logout</Text>
           </TouchableOpacity>
         </View>
       </View>
