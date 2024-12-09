@@ -13,6 +13,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./src/firebase/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navigation from "./src/components/navigation/Navbar";
+import "./assets/global/styles.web.css";
+
 
 const Stack = createStackNavigator();
 

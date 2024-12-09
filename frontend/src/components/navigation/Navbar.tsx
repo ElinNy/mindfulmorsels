@@ -52,7 +52,7 @@ export default function Navigation({ user }: NavbarProps) {
         <TouchableOpacity onPress={toggleDropdown}>
           <Image
             style={styles.icon}
-            source={require("../../../assets/icons/salad.png")}
+            source={require("../../../assets/icons/hamburger.png")}
           />
         </TouchableOpacity>
       ) : (

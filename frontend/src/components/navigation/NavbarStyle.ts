@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 120,
     backgroundColor: "#FCF5EB",
-    position: "relative", 
+    position: "relative",
+    zIndex: 1, 
   },
   logoContainer: {
     flexDirection: "row",
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 30,
     height: 30,
+    zIndex: 2, 
   },
   title: {
     marginLeft: 10,
@@ -31,7 +33,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
-
   displayNameContainer: {
     paddingBottom: 5, 
   },
@@ -76,9 +77,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 1,
     elevation: 10, 
-    zIndex: 999, 
+    zIndex: 9999, 
     borderRadius: 8,
-  },  
+  },
 });
 
 export default styles;
