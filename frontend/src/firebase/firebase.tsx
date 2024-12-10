@@ -19,6 +19,10 @@ export default function FirebaseRecipes() {
   const fetchRecipes = async () => {
     setLoading(true);
     try {
+      if (!firebaseConfig) {
+        console.error("Firebase-konfiguration saknas.");
+        return;
+      }
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
