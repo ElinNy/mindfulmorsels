@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { fetchRecipes } from "../spoonacular/spoonacularAPI";
+import { fetchRecipes, getRecipeDetails } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeListScreenStyle";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -20,6 +20,7 @@ import { useShareRecipe } from "../hooks/useShareRecipe";
 import DietaryPreferenceDropdown from "../components/dietaryPreferenceDropdown/DietaryPreferenceDropdown";
 import { usePreferences } from "../hooks/usePreferences";
 import { filterDietaryPreference } from "../utils/dietaryFilterUtils";
+import ServingFilter from "../components/servingFilter/ServingFilter";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -41,7 +42,7 @@ export default function RecipeListScreen() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showWelcomeText, setShowWelcomeText] = useState<boolean>(true);
-
+  const [servings, setServings] = useState<number | null>(null);
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
       Alert.alert("Invalid Input", "Please enter a valid ingredient.");
@@ -54,25 +55,42 @@ export default function RecipeListScreen() {
   const handleRemoveIngredient = (ingredient: string) => {
     setIngredients((prev) => prev.filter((item) => item !== ingredient));
   };
+  const handleSetServings = (newServings: number) => {
+    setServings(newServings);
+  };
 
   const handleSearch = async () => {
     if (ingredients.length === 0) {
       Alert.alert("No Ingredients", "Please add at least one ingredient.");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
     setShowWelcomeText(false);
-
+  
     try {
       const dietaryFilters = selectedPreferences.join(",");
+      console.log("Searching with ingredients:", ingredients.join(","));
+      console.log("Dietary Filters:", dietaryFilters);
       let data = await fetchRecipes(ingredients.join(","), dietaryFilters);
-
-      data = filterDietaryPreference(data, selectedPreferences);
-
+  
+      // Skapar detta för många queries till Apiet? Fick 402 väldigt snabbt
+      const detailedRecipes = await Promise.all(
+        data.map(async (recipe: any) => {
+          const details = await getRecipeDetails(recipe.id);
+          return details;
+        })
+      );
+  
+      if (servings) {
+        data = detailedRecipes.filter((recipe: any) => recipe.servings === servings);
+      } else {
+        data = detailedRecipes;
+      }
       setRecipes(data);
     } catch (err) {
+      console.error(err);
       setError("Failed to fetch recipes. Please try again.");
     } finally {
       setLoading(false);
@@ -116,12 +134,20 @@ export default function RecipeListScreen() {
         ))}
       </View>
 
-      {/* Dropdown för matpreferenser */}
-      <DietaryPreferenceDropdown
-        preferences={dietaryPreferences}
-        selectedPreferences={selectedPreferences}
-        onTogglePreference={togglePreference}
-      />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <DietaryPreferenceDropdown
+          preferences={dietaryPreferences}
+          selectedPreferences={selectedPreferences}
+          onTogglePreference={togglePreference}
+        />
+        <ServingFilter onChange={setServings} />
+      </View>
 
       {/* Sökknapp */}
       <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>

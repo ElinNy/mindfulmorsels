@@ -24,7 +24,7 @@ export const searchRecipes = async (query: string, diet: string): Promise<any> =
     const response = await apiClient.get("/recipes/complexSearch", {
       params: {
         query,
-        number: 10,
+        number: 5,
         diet,
       },
     });

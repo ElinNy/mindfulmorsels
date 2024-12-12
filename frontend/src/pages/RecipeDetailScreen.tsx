@@ -62,13 +62,16 @@ export default function RecipeDetailsScreen({ route }: any) {
         <Text style={styles.title}>{recipe.title}</Text>
         <BookmarkIcon
           isBookmarked={isBookmarked}
-          onPress={() => toggleBookmark({
-            id: recipeId,
-            title: recipe.title,
-            image: recipe.image,
-          })}
+          onPress={() =>
+            toggleBookmark({
+              id: recipeId,
+              title: recipe.title,
+              image: recipe.image,
+            })
+          }
         />
       </View>
+      <Text style={styles.sectionPortions}>Servings: {recipe.servings}</Text>
       <Text style={styles.sectionTitle}>Ingredients:</Text>
       {recipe.extendedIngredients.map((ingredient: any) => (
         <Text key={ingredient.id} style={styles.text}>
