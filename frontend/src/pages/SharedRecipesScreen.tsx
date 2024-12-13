@@ -10,31 +10,34 @@ import { RootStackParamList } from "../components/navigation/navigationTypes";
 import { useNavigation } from "@react-navigation/native";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
+
 export default function SharedRecipesScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark, fetchBookmarks } = useBookmarks();
   const [sharedRecipes, setSharedRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchSharedRecipes = async () => {
-      try {
-        const sharedRecipesCollection = collection(db, "sharedRecipes");
-        const snapshot = await getDocs(sharedRecipesCollection);
-        const recipes = snapshot.docs.map((doc) => ({
-          recipeId: doc.id,
-          ...doc.data(),
-        }));
-        setSharedRecipes(recipes);
-      } catch (error) {
-        console.error("Error fetching shared recipes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSharedRecipes();
-  }, []);
+    useEffect(() => {
+      const fetchSharedRecipes = async () => {
+        try {
+          const sharedRecipesCollection = collection(db, "sharedRecipes");
+          const snapshot = await getDocs(sharedRecipesCollection);
+          const recipes = snapshot.docs.map((doc) => ({
+            recipeId: Number(doc.id),
+            ...doc.data(),
+          }));
+          setSharedRecipes(recipes);
+          await fetchBookmarks();
+        } catch (error) {
+          console.error("Error fetching shared recipes:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      fetchSharedRecipes();
+    }, []);
+    
 
   if (loading) {
     return (
@@ -55,7 +58,7 @@ export default function SharedRecipesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Liked Recipes</Text>
+      <Text style={styles.header}>Shared Recipes</Text>
       <FlatList
         data={sharedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}
@@ -68,9 +71,8 @@ export default function SharedRecipesScreen() {
               (bookmark) => bookmark.recipeId === item.recipeId
             )}
             onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.recipeId }) 
+              navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
             }
-            
             onBookmarkPress={() => toggleBookmark(item)}
             showShareIcon={false}
           />

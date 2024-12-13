@@ -8,22 +8,24 @@ const apiClient = axios.create({
   },
 });
 
-export const fetchRecipes = async (query: string): Promise<any> => {
-    try {
-      const recipes = await searchRecipes(query);
-      return recipes;
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-      throw error;
-    }
-  };
-  
-export const searchRecipes = async (query: string): Promise<any> => {
+export const fetchRecipes = async (query: string, diet: string): Promise<any> => {
+  try {
+    console.log("Fetching recipes with query:", query, "and diet:", diet);
+    const recipes = await searchRecipes(query, diet);
+    return recipes;
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    throw error;
+  }
+};
+
+export const searchRecipes = async (query: string, diet: string): Promise<any> => {
   try {
     const response = await apiClient.get("/recipes/complexSearch", {
       params: {
         query,
-        number: 10,
+        number: 5,
+        diet,
       },
     });
     return response.data.results;
