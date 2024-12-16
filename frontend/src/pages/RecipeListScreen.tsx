@@ -44,6 +44,7 @@ export default function RecipeListScreen() {
   const [error, setError] = useState<string | null>(null);
   const [showWelcomeText, setShowWelcomeText] = useState<boolean>(true);
   const [servings, setServings] = useState<number | null>(null);
+
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
       Alert.alert("Invalid Input", "Please enter a valid ingredient.");
@@ -56,34 +57,28 @@ export default function RecipeListScreen() {
   const handleRemoveIngredient = (ingredient: string) => {
     setIngredients((prev) => prev.filter((item) => item !== ingredient));
   };
-  const handleSetServings = (newServings: number) => {
-    setServings(newServings);
-  };
 
   const handleSearch = async () => {
     if (ingredients.length === 0) {
       Alert.alert("No Ingredients", "Please add at least one ingredient.");
       return;
     }
-  
+
     setLoading(true);
     setError(null);
     setShowWelcomeText(false);
-  
+
     try {
       const dietaryFilters = selectedPreferences.join(",");
-      console.log("Searching with ingredients:", ingredients.join(","));
-      console.log("Dietary Filters:", dietaryFilters);
       let data = await fetchRecipes(ingredients.join(","), dietaryFilters);
-  
-      // Skapar detta för många queries till Apiet? Fick 402 väldigt snabbt
+
       const detailedRecipes = await Promise.all(
         data.map(async (recipe: any) => {
           const details = await getRecipeDetails(recipe.id);
           return details;
         })
       );
-  
+
       if (servings) {
         data = detailedRecipes.filter((recipe: any) => recipe.servings === servings);
       } else {
@@ -113,10 +108,7 @@ export default function RecipeListScreen() {
           value={ingredientInput}
           onChangeText={setIngredientInput}
         />
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={handleAddIngredient}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
@@ -136,13 +128,7 @@ export default function RecipeListScreen() {
         ))}
       </View>
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <DietaryPreferenceDropdown
           preferences={dietaryPreferences}
           selectedPreferences={selectedPreferences}
@@ -179,23 +165,14 @@ export default function RecipeListScreen() {
             recipeId={item.id}
             title={item.title}
             image={item.image}
-            isBookmarked={bookmarkedRecipes.some(
-              (bookmark) => bookmark.recipeId === item.id
-            )}
+            isBookmarked={bookmarkedRecipes.some((bookmark) => bookmark.recipeId === item.id)}
             onBookmarkPress={() => toggleBookmark(item)}
-            onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.id })
-            }
+            onPress={() => navigation.navigate("RecipeDetails", { recipeId: item.id })}
             showShareIcon={true}
-            onSharePress={() =>
-              handleShareRecipe({
-                recipeId: item.id,
-                title: item.title,
-                image: item.image,
-              })
-            }
+            onSharePress={() => handleShareRecipe({ recipeId: item.id, title: item.title, image: item.image })}
           />
         )}
+        nestedScrollEnabled={true}
         contentContainerStyle={styles.listContent}
       />
     </View>
