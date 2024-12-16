@@ -7,6 +7,7 @@ import { styles } from "./styles/MyRecipesScreenStyle";
 import ListCard from "../components/listcard/ListCard";
 import { useBookmarks } from "../hooks/useBookmarks";
 import { useShareRecipe } from "../hooks/useShareRecipe";
+import BackButton from "../components/backButton/BackButton";
 
 type MyRecipesNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -37,6 +38,7 @@ export default function MyRecipesScreen() {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <FlatList
         data={bookmarkedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}

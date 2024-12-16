@@ -21,6 +21,7 @@ import DietaryPreferenceDropdown from "../components/dietaryPreferenceDropdown/D
 import { usePreferences } from "../hooks/usePreferences";
 import { filterDietaryPreference } from "../utils/dietaryFilterUtils";
 import ServingFilter from "../components/servingFilter/ServingFilter";
+import BackButton from "../components/backButton/BackButton";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -99,6 +100,7 @@ export default function RecipeListScreen() {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       {/* Inputfält och "Add Ingredient"-knapp */}
       <View style={styles.inputContainer}>
         <Image
