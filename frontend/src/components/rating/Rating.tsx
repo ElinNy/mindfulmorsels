@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, Image, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, Image } from "react-native";
 import { db, auth } from "../../firebase/firebaseConfig";
-import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, increment, deleteDoc } from "firebase/firestore";
+import {styles} from "./RatingStyle";
 
 interface RatingProps {
   recipeId: number;
@@ -48,7 +49,14 @@ const Rating: React.FC<RatingProps> = ({ recipeId }) => {
       const recipeRef = doc(db, "sharedRecipes", recipeId.toString());
       const userLikeRef = doc(db, "sharedRecipes", recipeId.toString(), "likes", user.uid);
 
-      if (!userLiked) {
+      if (userLiked) {
+        await updateDoc(recipeRef, {
+          likes: increment(-1),
+        });
+        await deleteDoc(userLikeRef);
+        setLikes((prev) => prev - 1);
+        setUserLiked(false);
+      } else {
         await updateDoc(recipeRef, {
           likes: increment(1),
         });
@@ -59,7 +67,7 @@ const Rating: React.FC<RatingProps> = ({ recipeId }) => {
         setUserLiked(true);
       }
     } catch (error) {
-      console.error("Error liking recipe:", error);
+      console.error("Error liking/unliking recipe:", error);
     }
   };
 
@@ -77,25 +85,5 @@ const Rating: React.FC<RatingProps> = ({ recipeId }) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
-    top: 10,
-    right: 10,
-  },
-  starIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 4,
-  },
-  likesText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-});
 
 export default Rating;
