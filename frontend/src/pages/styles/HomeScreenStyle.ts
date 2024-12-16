@@ -9,7 +9,6 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    marginTop: -100,
     fontFamily: "Poppins-Bold",
     color:"#545454",
     fontSize: 44,
