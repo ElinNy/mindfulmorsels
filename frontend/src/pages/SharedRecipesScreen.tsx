@@ -8,11 +8,14 @@ import { useBookmarks } from "../hooks/useBookmarks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import { useNavigation } from "@react-navigation/native";
+import Rating from "../components/rating/Rating";
+import BackButton from "../components/backButton/BackButton";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
+
 export default function SharedRecipesScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark, fetchBookmarks } = useBookmarks();
   const [sharedRecipes, setSharedRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -22,10 +25,11 @@ export default function SharedRecipesScreen() {
         const sharedRecipesCollection = collection(db, "sharedRecipes");
         const snapshot = await getDocs(sharedRecipesCollection);
         const recipes = snapshot.docs.map((doc) => ({
-          recipeId: doc.id,
+          recipeId: Number(doc.id),
           ...doc.data(),
         }));
         setSharedRecipes(recipes);
+        await fetchBookmarks();
       } catch (error) {
         console.error("Error fetching shared recipes:", error);
       } finally {
@@ -55,25 +59,28 @@ export default function SharedRecipesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Liked Recipes</Text>
+      <Text style={styles.header}>Shared Recipes</Text>
+      <BackButton />
       <FlatList
         data={sharedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}
         renderItem={({ item }) => (
-          <ListCard
-            recipeId={item.recipeId}
-            title={item.title}
-            image={item.image}
-            isBookmarked={bookmarkedRecipes.some(
-              (bookmark) => bookmark.recipeId === item.recipeId
-            )}
-            onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.recipeId }) 
-            }
-            
-            onBookmarkPress={() => toggleBookmark(item)}
-            showShareIcon={false}
-          />
+          <View style={styles.listItem}>
+            <ListCard
+              recipeId={item.recipeId}
+              title={item.title}
+              image={item.image}
+              isBookmarked={bookmarkedRecipes.some(
+                (bookmark) => bookmark.recipeId === item.recipeId
+              )}
+              onPress={() =>
+                navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
+              }
+              onBookmarkPress={() => toggleBookmark(item)}
+              showShareIcon={false}
+            />
+            <Rating recipeId={item.recipeId} />
+          </View>
         )}
         contentContainerStyle={styles.listContent}
       />

@@ -6,6 +6,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "./navigationTypes";
 import { auth } from "../../firebase/firebaseConfig";
 import styles from "./NavbarStyle";
+import DropdownMenu from "../dropdownNavbar/DropdownMenu";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -31,7 +32,7 @@ export default function Navigation({ user }: NavbarProps) {
   };
 
   const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
+    setDropdownVisible((prev) => !prev);
   };
 
   return (
@@ -64,60 +65,12 @@ export default function Navigation({ user }: NavbarProps) {
       )}
 
       {dropdownVisible && user && (
-        <View style={styles.dropdown}>
-          {user?.displayName && (
-            <View style={styles.displayNameContainer}>
-              <Text style={styles.displayName}>
-                Welcome, {user.displayName}!
-              </Text>
-            </View>
-          )}
-          <View style={styles.menuRow}>
-            <View style={styles.leftMenu}>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  setDropdownVisible(false);
-                  navigation.navigate("Recipes");
-                }}
-              >
-                <Text style={styles.menuText}>Generate Recipes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  setDropdownVisible(false);
-                  navigation.navigate("LikedRecipes");
-                }}
-              >
-                <Text style={styles.menuText}>Liked Recipes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  setDropdownVisible(false);
-                  navigation.navigate("MyRecipes");
-                }}
-              >
-                <Text
-                  style={[
-                    styles.menuText,
-                    { color: "#FF6F61", fontWeight: "bold" },
-                  ]}
-                >
-                  My Recipes
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.rightMenu}>
-              <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-                <Text style={[styles.menuText, { color: "#3DA510" }]}>
-                  Logout
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        <DropdownMenu
+          user={user}
+          navigation={navigation}
+          onLogout={handleLogout}
+          closeDropdown={() => setDropdownVisible(false)}
+        />
       )}
     </View>
   );

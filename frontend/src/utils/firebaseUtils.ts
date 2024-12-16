@@ -1,5 +1,5 @@
 import { db, auth } from "../firebase/firebaseConfig";
-import { doc, setDoc, deleteDoc, getDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc, Timestamp, collection, getDocs } from "firebase/firestore";
 import { Bookmark } from "../types/types";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -102,6 +102,75 @@ export const shareRecipe = async (recipe: any): Promise<void> => {
     console.log("Recipe shared successfully!");
   } catch (error) {
     console.error("Error sharing recipe:", error);
+    throw error;
+  }
+};
+
+/**
+ * Lägger till ett recept som gillat för den aktuella användaren.
+ * @param recipe - Receptobjektet som ska gillas.
+ * @param rating - Betyg som ges till receptet (t.ex., 1-5).
+ */
+export const addLikedRecipe = async (recipe: any, rating: number): Promise<void> => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("Användaren är inte inloggad.");
+  }
+
+  const likedRecipeRef = doc(db, "likedRecipes", user.uid, "recipes", recipe.id.toString());
+
+  const likedRecipe = {
+    title: recipe.title,
+    image: recipe.image,
+    likedAt: Timestamp.fromDate(new Date()),
+    rating: rating,
+  };
+
+  try {
+    await setDoc(likedRecipeRef, likedRecipe);
+    console.log("Recipe liked successfully!");
+  } catch (error) {
+    console.error("Error liking recipe:", error);
+    throw error;
+  }
+};
+
+/**
+ * Tar bort ett recept från användarens gillade recept.
+ * @param recipeId - ID för receptet som ska tas bort.
+ */
+export const removeLikedRecipe = async (recipeId: number): Promise<void> => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("Användaren är inte inloggad.");
+  }
+
+  const likedRecipeRef = doc(db, "likedRecipes", user.uid, "recipes", recipeId.toString());
+
+  try {
+    await deleteDoc(likedRecipeRef);
+    console.log("Recipe unliked successfully!");
+  } catch (error) {
+    console.error("Error unliking recipe:", error);
+    throw error;
+  }
+};
+
+/**
+ * Hämtar alla gillade recept för den aktuella användaren.
+ * @returns En lista med gillade recept.
+ */
+export const getLikedRecipes = async (): Promise<any[]> => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("Användaren är inte inloggad.");
+  }
+
+  try {
+    const snapshot = await getDocs(collection(db, "likedRecipes", user.uid, "recipes"));
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching liked recipes:", error);
     throw error;
   }
 };

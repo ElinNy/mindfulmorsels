@@ -10,3 +10,5 @@ frontend/.expo/
 
 google-services.json
 GoogleService-info.plist
+# Local Netlify folder
+.netlify

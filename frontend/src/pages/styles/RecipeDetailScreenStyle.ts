@@ -53,4 +53,9 @@ export const styles = StyleSheet.create({
     color: "#FF6F61",
     fontFamily: "Poppins-Regular",
   },
+  sectionPortions:{
+    fontFamily: "Poppins-Bold",
+    fontSize: 16,
+    color: "#3DA510"
+  }
 });
