@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./src/firebase/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navigation from "./src/components/navigation/Navbar";
+import Footer from "./src/components/footer/Footer";
 
 const Stack = createStackNavigator();
 
@@ -72,6 +73,7 @@ export default function App() {
           <Stack.Screen name="MyRecipes" component={MyRecipesScreen} />
           <Stack.Screen name="LikedRecipes" component={SharedRecipesScreen} />
         </Stack.Navigator>
+        <Footer />
       </View>
     </NavigationContainer>
   );
