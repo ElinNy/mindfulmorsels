@@ -11,6 +11,7 @@ import { getRecipeDetails } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeDetailScreenStyle";
 import BookmarkIcon from "../components/bookmark/BookmarkIcon";
 import { useBookmarks } from "../hooks/useBookmarks";
+import BackButton from "../components/backButton/BackButton";
 
 export default function RecipeDetailsScreen({ route }: any) {
   const { recipeId } = route.params;
@@ -57,6 +58,7 @@ export default function RecipeDetailsScreen({ route }: any) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <BackButton />
       <Image source={{ uri: recipe.image }} style={styles.image} />
       <View style={styles.header}>
         <Text style={styles.title}>{recipe.title}</Text>

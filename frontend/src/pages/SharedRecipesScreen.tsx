@@ -9,6 +9,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import { useNavigation } from "@react-navigation/native";
 import Rating from "../components/rating/Rating";
+import BackButton from "../components/backButton/BackButton";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -59,6 +60,7 @@ export default function SharedRecipesScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Shared Recipes</Text>
+      <BackButton />
       <FlatList
         data={sharedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}
