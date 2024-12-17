@@ -8,16 +8,16 @@ const apiClient = axios.create({
   },
 });
 
-export const fetchRecipes = async (query: string, diet: string): Promise<any> => {
-  try {
-    console.log("Fetching recipes with query:", query, "and diet:", diet);
-    const recipes = await searchRecipes(query, diet);
-    return recipes;
-  } catch (error) {
-    console.error("Error fetching recipes:", error);
-    throw error;
+export async function fetchRecipes(ingredients: string, dietaryFilters: string, offset: number = 0, number: number = 10) {
+  const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=${number}&offset=${offset}&diet=${dietaryFilters}&apiKey=${SPOONACULAR_API_KEY}`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
-};
+  return await response.json();
+}
+
 
 export const searchRecipes = async (query: string, diet: string): Promise<any> => {
   try {

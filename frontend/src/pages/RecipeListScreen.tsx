@@ -22,6 +22,7 @@ import { usePreferences } from "../hooks/usePreferences";
 import { filterDietaryPreference } from "../utils/dietaryFilterUtils";
 import ServingFilter from "../components/servingFilter/ServingFilter";
 import BackButton from "../components/backButton/BackButton";
+import PagineringSpoonacular from "../components/pagination/PaginationSpoonacular";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -80,7 +81,9 @@ export default function RecipeListScreen() {
       );
 
       if (servings) {
-        data = detailedRecipes.filter((recipe: any) => recipe.servings === servings);
+        data = detailedRecipes.filter(
+          (recipe: any) => recipe.servings === servings
+        );
       } else {
         data = detailedRecipes;
       }
@@ -108,11 +111,13 @@ export default function RecipeListScreen() {
           value={ingredientInput}
           onChangeText={setIngredientInput}
         />
-        <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddIngredient}
+        >
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
-
       {/* Lista med ingredienser som piller */}
       <View style={styles.pillContainer}>
         {ingredients.map((ingredient, index) => (
@@ -127,8 +132,13 @@ export default function RecipeListScreen() {
           </View>
         ))}
       </View>
-
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <DietaryPreferenceDropdown
           preferences={dietaryPreferences}
           selectedPreferences={selectedPreferences}
@@ -136,12 +146,10 @@ export default function RecipeListScreen() {
         />
         <ServingFilter onChange={setServings} />
       </View>
-
       {/* Sökknapp */}
       <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
         <Text style={styles.searchButtonText}>Find Recipes</Text>
       </TouchableOpacity>
-
       {/* Laddar eller visar fel */}
       {loading && (
         <View style={styles.center}>
@@ -149,13 +157,11 @@ export default function RecipeListScreen() {
           <Text style={styles.loadingText}>Loading recipes...</Text>
         </View>
       )}
-
       {error && (
         <View style={styles.center}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
-
       {/* Visar recept */}
       <FlatList
         data={recipes}
@@ -165,15 +171,29 @@ export default function RecipeListScreen() {
             recipeId={item.id}
             title={item.title}
             image={item.image}
-            isBookmarked={bookmarkedRecipes.some((bookmark) => bookmark.recipeId === item.id)}
+            isBookmarked={bookmarkedRecipes.some(
+              (bookmark) => bookmark.recipeId === item.id
+            )}
             onBookmarkPress={() => toggleBookmark(item)}
-            onPress={() => navigation.navigate("RecipeDetails", { recipeId: item.id })}
+            onPress={() =>
+              navigation.navigate("RecipeDetails", { recipeId: item.id })
+            }
             showShareIcon={true}
-            onSharePress={() => handleShareRecipe({ recipeId: item.id, title: item.title, image: item.image })}
+            onSharePress={() =>
+              handleShareRecipe({
+                recipeId: item.id,
+                title: item.title,
+                image: item.image,
+              })
+            }
           />
         )}
         nestedScrollEnabled={true}
         contentContainerStyle={styles.listContent}
+      />
+      <PagineringSpoonacular
+        ingredients={ingredients}
+        dietaryFilters={selectedPreferences.join(",")}
       />
     </View>
   );

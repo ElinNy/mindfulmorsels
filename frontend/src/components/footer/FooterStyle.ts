@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, Linking } from "react-native";
+import { StyleSheet } from "react-native";
+
 export const styles = StyleSheet.create({
   footerContainer: {
     backgroundColor: "#3DA510",
     opacity: 0.7,
-    padding: 50,
+    padding: 20,
     alignItems: "center",
     justifyContent: "center",
   },
