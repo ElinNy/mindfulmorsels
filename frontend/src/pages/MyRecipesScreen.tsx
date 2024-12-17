@@ -38,7 +38,10 @@ export default function MyRecipesScreen() {
 
   return (
     <View style={styles.container}>
-      <BackButton />
+      <View style={styles.headerContainer}>
+        <BackButton />
+        <Text style={styles.header}>My Recipes</Text>
+      </View>
       <FlatList
         data={bookmarkedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}
@@ -61,8 +64,8 @@ export default function MyRecipesScreen() {
             }
           />
         )}
-        contentContainerStyle={styles.flatListContent}
+        contentContainerStyle={styles.listContent}
       />
     </View>
-  );
+  );  
 }

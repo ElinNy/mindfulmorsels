@@ -59,8 +59,10 @@ export default function SharedRecipesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Shared Recipes</Text>
-      <BackButton />
+      <View style={styles.headerContainer}>
+        <BackButton />
+        <Text style={styles.header}>Shared Recipes</Text>
+      </View>
       <FlatList
         data={sharedRecipes}
         keyExtractor={(item) => item.recipeId.toString()}
@@ -85,5 +87,5 @@ export default function SharedRecipesScreen() {
         contentContainerStyle={styles.listContent}
       />
     </View>
-  );
+  );  
 }

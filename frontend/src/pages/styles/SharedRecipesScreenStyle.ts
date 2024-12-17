@@ -6,10 +6,16 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F8F8F8",
     padding: 16,
   },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginLeft: 10,
+    color:"#545454",
   },
   center: {
     flex: 1,
