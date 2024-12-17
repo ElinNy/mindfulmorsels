@@ -38,22 +38,24 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {displayName ? (
-        <>
-          <Text style={styles.title}>Hello, {displayName}!</Text>
-          <Text style={styles.subtitle}>
-            Start generating recipes to reduce waste.
-          </Text>
-        </>
-      ) : (
-        <>
-          <Text style={styles.title}>Welcome to Mindful Morsels!</Text>
-          <Text style={styles.subtitle}>
-            Your guide to reducing food waste.
-          </Text>
-        </>
-      )}
-
+      <View style={styles.textContainer}>
+        {displayName ? (
+          <>
+            <Text style={styles.title}>Hello, {displayName}!</Text>
+            <Text style={styles.subtitle}>
+              Start generating recipes to reduce waste.
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text style={styles.title}>Welcome to Mindful Morsels!</Text>
+            <Text style={styles.subtitle}>
+              Your guide to reducing food waste.
+            </Text>
+          </>
+        )}
+      </View>
+  
       <View style={styles.imageRow}>
         <View style={styles.imageContainer}>
           <Image
@@ -68,13 +70,13 @@ export default function HomeScreen() {
           />
         </View>
       </View>
-
+  
       <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
         <Text style={styles.buttonText}>
           {isLoggedIn ? "Generate Recipes" : "View Shared Recipes"}
         </Text>
       </TouchableOpacity>
-
+  
       <View style={styles.imageRow}>
         <View style={styles.imageContainer}>
           <Image
@@ -91,4 +93,5 @@ export default function HomeScreen() {
       </View>
     </View>
   );
+  
 }

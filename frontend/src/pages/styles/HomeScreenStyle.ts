@@ -8,6 +8,11 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F8F8F8",
     padding: 10,
   },
+  textContainer: {
+    alignSelf: "flex-start",
+    marginTop: 10,
+    marginLeft: 10,
+  },
   title: {
     fontFamily: "Poppins-Bold",
     color:"#545454",
@@ -22,7 +27,7 @@ export const styles = StyleSheet.create({
   },
   imageRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
     width: "100%",
     marginVertical: 20,
   },
