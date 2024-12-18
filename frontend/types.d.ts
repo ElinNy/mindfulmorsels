@@ -2,6 +2,7 @@
 declare module "expo-constants" {
     export interface Extra {
       spoonacularApi: string;
+      googleClientId: string;
       firebase: {
         apiKey: string;
         authDomain: string;

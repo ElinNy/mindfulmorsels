@@ -14,6 +14,7 @@ import { auth } from "./src/firebase/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navigation from "./src/components/navigation/Navbar";
 import Footer from "./src/components/footer/Footer";
+import GoogleLoginScreen from "./src/pages/auth/googleAuth";
 
 const Stack = createStackNavigator();
 
@@ -67,6 +68,7 @@ export default function App() {
         >
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="GoogleLogin" component={GoogleLoginScreen} />
           <Stack.Screen name="Recipes" component={RecipeListScreen} />
           <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
           <Stack.Screen name="MyRecipes" component={MyRecipesScreen} />

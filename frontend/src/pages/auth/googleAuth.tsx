@@ -1,4 +1,4 @@
-//Jag ska komma tillbaka till denna för fick det inte att fungera med google inloggning. Men jag behåller denna så länge även om jag inte använder den nånstans för tillfället.
+// src/pages/auth/GoogleLoginScreen.tsx
 
 import React, { useEffect } from "react";
 import { Button, View, Text, StyleSheet } from "react-native";
@@ -9,14 +9,13 @@ import Constants from "expo-constants";
 
 export default function GoogleLoginScreen() {
   const googleClientId = Constants.expoConfig?.extra?.googleClientId;
-  const firebaseConfig = Constants.expoConfig?.extra?.firebase;
+
+
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId: googleClientId,
-    // redirectUri: Constants.manifest?.extra?.googleRedirectUri,
+    redirectUri: 'https://auth.expo.io/@elinny/mindful-morsels',
   });
-
-  console.log("Firebase Config:", firebaseConfig);
-  console.log("Google Client ID:", googleClientId);
+  
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -37,7 +36,7 @@ export default function GoogleLoginScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Logga in med Google</Text>
       <Button
-        title="Logga in"
+        title="Logga in med Google"
         onPress={() => {
           promptAsync();
         }}
