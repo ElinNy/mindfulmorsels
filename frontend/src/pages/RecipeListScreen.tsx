@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { fetchRecipes, getRecipeDetails } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeListScreenStyle";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -19,19 +18,12 @@ import { useBookmarks } from "../hooks/useBookmarks";
 import { useShareRecipe } from "../hooks/useShareRecipe";
 import DietaryPreferenceDropdown from "../components/dietaryPreferenceDropdown/DietaryPreferenceDropdown";
 import { usePreferences } from "../hooks/usePreferences";
-import { filterDietaryPreference } from "../utils/dietaryFilterUtils";
 import ServingFilter from "../components/servingFilter/ServingFilter";
 import BackButton from "../components/backButton/BackButton";
-import PagineringSpoonacular from "../components/pagination/PaginationSpoonacular";
+import { useRecipeActions } from "../hooks/useLoadMoreRecipes";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
-const dietaryPreferences = [
-  { id: "glutenFree", label: "Glutenfritt" },
-  { id: "dairyFree", label: "Mjölkfritt" },
-  { id: "vegetarian", label: "Vegetariskt" },
-  { id: "vegan", label: "Veganskt" },
-];
 
 export default function RecipeListScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -41,10 +33,9 @@ export default function RecipeListScreen() {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showWelcomeText, setShowWelcomeText] = useState<boolean>(true);
-  const [servings, setServings] = useState<number | null>(null);
+
+  const { handleSearch, loadMoreRecipes, loading, loadingMore, error } =
+    useRecipeActions(ingredients, selectedPreferences, setRecipes);
 
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
@@ -59,46 +50,13 @@ export default function RecipeListScreen() {
     setIngredients((prev) => prev.filter((item) => item !== ingredient));
   };
 
-  const handleSearch = async () => {
-    if (ingredients.length === 0) {
-      Alert.alert("No Ingredients", "Please add at least one ingredient.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    setShowWelcomeText(false);
-
-    try {
-      const dietaryFilters = selectedPreferences.join(",");
-      let data = await fetchRecipes(ingredients.join(","), dietaryFilters);
-
-      const detailedRecipes = await Promise.all(
-        data.map(async (recipe: any) => {
-          const details = await getRecipeDetails(recipe.id);
-          return details;
-        })
-      );
-
-      if (servings) {
-        data = detailedRecipes.filter(
-          (recipe: any) => recipe.servings === servings
-        );
-      } else {
-        data = detailedRecipes;
-      }
-      setRecipes(data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch recipes. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <BackButton />
+      <View style={styles.headerContainer}>
+        <BackButton />
+        <Text style={styles.header}>My Recipes</Text>
+      </View>
+
       {/* Inputfält och "Add Ingredient"-knapp */}
       <View style={styles.inputContainer}>
         <Image
@@ -132,36 +90,26 @@ export default function RecipeListScreen() {
           </View>
         ))}
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <DietaryPreferenceDropdown
-          preferences={dietaryPreferences}
-          selectedPreferences={selectedPreferences}
-          onTogglePreference={togglePreference}
-        />
-        <ServingFilter onChange={setServings} />
-      </View>
+
       {/* Sökknapp */}
       <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
         <Text style={styles.searchButtonText}>Find Recipes</Text>
       </TouchableOpacity>
-      {/* Laddar eller visar fel */}
+
+      {/* Visar fel eller laddar */}
       {loading && (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#FF6F61" />
           <Text style={styles.loadingText}>Loading recipes...</Text>
         </View>
       )}
+
       {error && (
         <View style={styles.center}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
+
       {/* Visar recept */}
       <FlatList
         data={recipes}
@@ -188,12 +136,24 @@ export default function RecipeListScreen() {
             }
           />
         )}
-        nestedScrollEnabled={true}
-        contentContainerStyle={styles.listContent}
-      />
-      <PagineringSpoonacular
-        ingredients={ingredients}
-        dietaryFilters={selectedPreferences.join(",")}
+        contentContainerStyle={{ ...styles.listContent, paddingBottom: 150 }}
+        ListFooterComponent={
+          <View style={styles.footer}>
+            {loadingMore ? (
+              <>
+                <ActivityIndicator size="small" color="#FF6F61" />
+                <Text style={styles.loadingText}>Loading more recipes...</Text>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={styles.loadMoreButton}
+                onPress={loadMoreRecipes}
+              >
+                <Text style={styles.loadMoreButtonText}>Load More</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        }
       />
     </View>
   );
