@@ -104,6 +104,35 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
   },
   listContent: {
-    paddingBottom: 20,
+    paddingBottom: 0,
   },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color:"#545454",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  footer: {
+    marginBottom:150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  loadMoreButton: {
+    backgroundColor: "#FF6F61",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+
+  loadMoreButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
 });
