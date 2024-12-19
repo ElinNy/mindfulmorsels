@@ -24,6 +24,12 @@ import { useRecipeActions } from "../hooks/useLoadMoreRecipes";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
+const dietaryPreferences = [
+  { id: "glutenFree", label: "Glutenfritt" },
+  { id: "dairyFree", label: "Mjölkfritt" },
+  { id: "vegetarian", label: "Vegetariskt" },
+  { id: "vegan", label: "Veganskt" },
+];
 
 export default function RecipeListScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -33,9 +39,10 @@ export default function RecipeListScreen() {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
+  const [servings, setServings] = useState<number | null>(null);
 
   const { handleSearch, loadMoreRecipes, loading, loadingMore, error } =
-    useRecipeActions(ingredients, selectedPreferences, setRecipes);
+    useRecipeActions(ingredients, selectedPreferences, servings, setRecipes);
 
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
@@ -76,6 +83,7 @@ export default function RecipeListScreen() {
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
+
       {/* Lista med ingredienser som piller */}
       <View style={styles.pillContainer}>
         {ingredients.map((ingredient, index) => (
@@ -89,6 +97,22 @@ export default function RecipeListScreen() {
             </TouchableOpacity>
           </View>
         ))}
+      </View>
+
+      {/* Filterkomponenter */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <DietaryPreferenceDropdown
+          preferences={dietaryPreferences}
+          selectedPreferences={selectedPreferences}
+          onTogglePreference={togglePreference}
+        />
+        <ServingFilter onChange={setServings} />
       </View>
 
       {/* Sökknapp */}
@@ -113,7 +137,7 @@ export default function RecipeListScreen() {
       {/* Visar recept */}
       <FlatList
         data={recipes}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `${item.id}-${index}`} 
         renderItem={({ item }) => (
           <ListCard
             recipeId={item.id}
