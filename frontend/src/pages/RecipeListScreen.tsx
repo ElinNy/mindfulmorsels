@@ -42,6 +42,7 @@ export default function RecipeListScreen() {
   const [servings, setServings] = useState<number | null>(null);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [noMoreData, setNoMoreData] = useState<boolean>(false);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
   const { handleSearch, loadMoreRecipes, loading, loadingMore, error } =
     useRecipeActions(
@@ -59,14 +60,19 @@ export default function RecipeListScreen() {
     }
     setIngredients((prev) => [...prev, ingredientInput.trim()]);
     setIngredientInput("");
+    setShowFilters(true);
   };
 
   const handleRemoveIngredient = (ingredient: string) => {
     setIngredients((prev) => prev.filter((item) => item !== ingredient));
+    if (ingredients.length <= 1) {
+      setShowFilters(false);
+    }
   };
 
   const handleSearchWithFlag = () => {
     setHasSearched(true);
+    setShowFilters(false); // Stänger dropdownen när sökningen utförs
     setNoMoreData(false);
     handleSearch();
   };
@@ -90,13 +96,21 @@ export default function RecipeListScreen() {
           value={ingredientInput}
           onChangeText={setIngredientInput}
         />
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={handleAddIngredient}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Placeholder-bild och rubrik */}
+      {!hasSearched && recipes.length === 0 && (
+        <View style={styles.placeholderContainer}>
+          <Image
+            source={require("../../assets/images/pic6.jpg")}
+            style={styles.placeholderImage}
+          />
+          <Text style={styles.placeholderText}>Add ingredients to find recipes!</Text>
+        </View>
+      )}
 
       {/* Lista med ingredienser som piller */}
       <View style={styles.pillContainer}>
@@ -113,45 +127,22 @@ export default function RecipeListScreen() {
         ))}
       </View>
 
-      {/* Filterkomponenter */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <DietaryPreferenceDropdown
-          preferences={dietaryPreferences}
-          selectedPreferences={selectedPreferences}
-          onTogglePreference={togglePreference}
-        />
-        <ServingFilter onChange={setServings} />
-      </View>
-
-      {/* Sökknapp */}
-      <TouchableOpacity
-        style={styles.searchButton}
-        onPress={handleSearchWithFlag}
-      >
-        <Text style={styles.searchButtonText}>Find Recipes</Text>
-      </TouchableOpacity>
-
-      {/* Visar fel eller laddar */}
-      {loading && (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#FF6F61" />
-          <Text style={styles.loadingText}>Loading recipes...</Text>
+      {/* Filterkomponenter och sökknapp */}
+      {showFilters && (
+        <View style={styles.dropdownContainer}>
+          <DietaryPreferenceDropdown
+            preferences={dietaryPreferences}
+            selectedPreferences={selectedPreferences}
+            onTogglePreference={togglePreference}
+          />
+          <ServingFilter onChange={setServings} />
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearchWithFlag}>
+            <Text style={styles.searchButtonText}>Find Recipes</Text>
+          </TouchableOpacity>
         </View>
       )}
 
-      {error && (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      )}
-
-      {/* Visar recept */}
+      {/* Visar receptlista */}
       <FlatList
         data={recipes}
         keyExtractor={(item, index) => `${item.id}-${index}`}
@@ -184,16 +175,11 @@ export default function RecipeListScreen() {
               {loadingMore ? (
                 <>
                   <ActivityIndicator size="small" color="#FF6F61" />
-                  <Text style={styles.loadingText}>
-                    Loading more recipes...
-                  </Text>
+                  <Text style={styles.loadingText}>Loading more recipes...</Text>
                 </>
               ) : (
                 !noMoreData && (
-                  <TouchableOpacity
-                    style={styles.loadMoreButton}
-                    onPress={loadMoreRecipes}
-                  >
+                  <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreRecipes}>
                     <Text style={styles.loadMoreButtonText}>Load More</Text>
                   </TouchableOpacity>
                 )

@@ -134,5 +134,38 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
+  placeholderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  
+  placeholderImage: {
+    width: "100%",
+    height: 400,
+    resizeMode: "cover",
+    marginBottom: 20,
+    marginTop: 250,
+    borderRadius:8,
+  },
+  
+  placeholderText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#545454",
+    textAlign: "center",
+  },
+  
+  dropdownContainer: {
+    position: "absolute",
+    top: 200,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    zIndex: 10,
+    padding: 16,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  
 });
