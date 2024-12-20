@@ -43,15 +43,18 @@ export default function SharedRecipesScreen() {
 
   const loadMoreRecipes = async () => {
     if (loadingMore || !lastDoc) return;
-
+  
     try {
       setLoadingMore(true);
-      const { recipes, lastVisible } = await fetchPaginatedSharedRecipes(10, lastDoc);
-      
-      if (recipes.length === 0) {
+      const { recipes, lastVisible } = await fetchPaginatedSharedRecipes(11, lastDoc); 
+  
+      if (recipes.length <= 10) {
         setLastDoc(null);
-      } else {
-        setSharedRecipes((prev) => [...prev, ...recipes]);
+      }
+  
+      setSharedRecipes((prev) => [...prev, ...recipes.slice(0, 10)]);
+
+      if (recipes.length === 11) {
         setLastDoc(lastVisible);
       }
     } catch (error) {
@@ -106,13 +109,13 @@ export default function SharedRecipesScreen() {
                   <ActivityIndicator size="small" color="#FF6F61" />
                   <Text style={styles.loadingText}>Loading more recipes...</Text>
                 </View>
-              ) : (
+              ) : lastDoc ? (
                 <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreRecipes}>
                   <Text style={styles.loadMoreButtonText}>Load More</Text>
                 </TouchableOpacity>
-              )}
+              ) : null}
             </View>
-          }
+          }   
         />
       )}
     </View>

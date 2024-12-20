@@ -40,9 +40,17 @@ export default function RecipeListScreen() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
   const [servings, setServings] = useState<number | null>(null);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
+  const [noMoreData, setNoMoreData] = useState<boolean>(false);
 
   const { handleSearch, loadMoreRecipes, loading, loadingMore, error } =
-    useRecipeActions(ingredients, selectedPreferences, servings, setRecipes);
+    useRecipeActions(
+      ingredients,
+      selectedPreferences,
+      servings,
+      setRecipes,
+      setNoMoreData
+    );
 
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
@@ -55,6 +63,12 @@ export default function RecipeListScreen() {
 
   const handleRemoveIngredient = (ingredient: string) => {
     setIngredients((prev) => prev.filter((item) => item !== ingredient));
+  };
+
+  const handleSearchWithFlag = () => {
+    setHasSearched(true);
+    setNoMoreData(false);
+    handleSearch();
   };
 
   return (
@@ -116,7 +130,10 @@ export default function RecipeListScreen() {
       </View>
 
       {/* Sökknapp */}
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+      <TouchableOpacity
+        style={styles.searchButton}
+        onPress={handleSearchWithFlag}
+      >
         <Text style={styles.searchButtonText}>Find Recipes</Text>
       </TouchableOpacity>
 
@@ -137,7 +154,7 @@ export default function RecipeListScreen() {
       {/* Visar recept */}
       <FlatList
         data={recipes}
-        keyExtractor={(item, index) => `${item.id}-${index}`} 
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={({ item }) => (
           <ListCard
             recipeId={item.id}
@@ -162,21 +179,27 @@ export default function RecipeListScreen() {
         )}
         contentContainerStyle={{ ...styles.listContent, paddingBottom: 150 }}
         ListFooterComponent={
-          <View style={styles.footer}>
-            {loadingMore ? (
-              <>
-                <ActivityIndicator size="small" color="#FF6F61" />
-                <Text style={styles.loadingText}>Loading more recipes...</Text>
-              </>
-            ) : (
-              <TouchableOpacity
-                style={styles.loadMoreButton}
-                onPress={loadMoreRecipes}
-              >
-                <Text style={styles.loadMoreButtonText}>Load More</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          hasSearched && recipes.length > 0 ? (
+            <View style={styles.footer}>
+              {loadingMore ? (
+                <>
+                  <ActivityIndicator size="small" color="#FF6F61" />
+                  <Text style={styles.loadingText}>
+                    Loading more recipes...
+                  </Text>
+                </>
+              ) : (
+                !noMoreData && (
+                  <TouchableOpacity
+                    style={styles.loadMoreButton}
+                    onPress={loadMoreRecipes}
+                  >
+                    <Text style={styles.loadMoreButtonText}>Load More</Text>
+                  </TouchableOpacity>
+                )
+              )}
+            </View>
+          ) : null
         }
       />
     </View>

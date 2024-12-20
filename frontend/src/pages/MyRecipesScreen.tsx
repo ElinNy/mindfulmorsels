@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
@@ -9,16 +15,41 @@ import { useBookmarks } from "../hooks/useBookmarks";
 import { useShareRecipe } from "../hooks/useShareRecipe";
 import BackButton from "../components/backButton/BackButton";
 
-type MyRecipesNavigationProp = StackNavigationProp<RootStackParamList, "MyRecipes">;
+type MyRecipesNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "MyRecipes"
+>;
 
 export default function MyRecipesScreen() {
-  const { bookmarkedRecipes, toggleBookmark, fetchBookmarks, fetchMoreBookmarks, loading, loadingMore } = useBookmarks();
+  const {
+    bookmarkedRecipes,
+    toggleBookmark,
+    fetchBookmarks,
+    fetchMoreBookmarks,
+    loading,
+    loadingMore,
+  } = useBookmarks();
   const { handleShareRecipe } = useShareRecipe();
   const navigation = useNavigation<MyRecipesNavigationProp>();
+  const [noMoreData, setNoMoreData] = useState(false);
 
   useEffect(() => {
     fetchBookmarks();
   }, []);
+
+  const loadMoreBookmarks = async () => {
+    if (loadingMore) return;
+
+    try {
+      const newBookmarks = await fetchMoreBookmarks();
+
+      if (newBookmarks.length < 10) {
+        setNoMoreData(true);
+      }
+    } catch (error) {
+      console.error("Error loading more bookmarks:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -55,7 +86,9 @@ export default function MyRecipesScreen() {
                 })
               }
               onPress={() =>
-                navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
+                navigation.navigate("RecipeDetails", {
+                  recipeId: item.recipeId,
+                })
               }
             />
           )}
@@ -65,12 +98,19 @@ export default function MyRecipesScreen() {
               {loadingMore ? (
                 <View style={styles.footer}>
                   <ActivityIndicator size="small" color="#FF6F61" />
-                  <Text style={styles.loadingText}>Loading more recipes...</Text>
+                  <Text style={styles.loadingText}>
+                    Loading more recipes...
+                  </Text>
                 </View>
               ) : (
-                <TouchableOpacity style={styles.loadMoreButton} onPress={fetchMoreBookmarks}>
-                  <Text style={styles.loadMoreButtonText}>Load More</Text>
-                </TouchableOpacity>
+                !noMoreData && (
+                  <TouchableOpacity
+                    style={styles.loadMoreButton}
+                    onPress={loadMoreBookmarks}
+                  >
+                    <Text style={styles.loadMoreButtonText}>Load More</Text>
+                  </TouchableOpacity>
+                )
               )}
             </View>
           }

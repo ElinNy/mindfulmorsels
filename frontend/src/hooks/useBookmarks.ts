@@ -27,26 +27,31 @@ export const useBookmarks = () => {
     }
   };
 
-  const fetchMoreBookmarks = async () => {
-    if (loadingMore || !lastDoc) return;
-
+  const fetchMoreBookmarks = async (): Promise<any[]> => {
+    if (loadingMore || !lastDoc) return [];
+  
     try {
       setLoadingMore(true);
       const user = auth.currentUser;
-      if (!user) return;
-
+      if (!user) return [];
+  
       const bookmarksCollection = collection(db, "users", user.uid, "bookmarks");
       const q = query(bookmarksCollection, orderBy("title"), startAfter(lastDoc), limit(10));
       const snapshot = await getDocs(q);
-
-      setBookmarkedRecipes((prev) => [...prev, ...snapshot.docs.map((doc) => ({ recipeId: doc.id, ...doc.data() }))]);
+  
+      const newBookmarks = snapshot.docs.map((doc) => ({ recipeId: doc.id, ...doc.data() }));
+      setBookmarkedRecipes((prev) => [...prev, ...newBookmarks]);
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+  
+      return newBookmarks; 
     } catch (error) {
       console.error("Error fetching more bookmarks:", error);
+      return [];
     } finally {
       setLoadingMore(false);
     }
   };
+  
 
   const toggleBookmark = async (recipe: any) => {
     const user = auth.currentUser;
