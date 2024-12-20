@@ -36,4 +36,22 @@ export const styles = StyleSheet.create({
   listItem: {
     marginBottom: 20,
   },
+  footer: {
+    marginBottom:150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  loadMoreButton: {
+    backgroundColor: "#FF6F61",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+
+  loadMoreButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });

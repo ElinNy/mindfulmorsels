@@ -61,7 +61,7 @@ export default function RecipeListScreen() {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <BackButton />
-        <Text style={styles.header}>My Recipes</Text>
+        <Text style={styles.header}>Generate Recipes</Text>
       </View>
 
       {/* Inputfält och "Add Ingredient"-knapp */}

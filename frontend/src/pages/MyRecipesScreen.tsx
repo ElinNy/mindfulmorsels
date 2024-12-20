@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
@@ -9,32 +9,16 @@ import { useBookmarks } from "../hooks/useBookmarks";
 import { useShareRecipe } from "../hooks/useShareRecipe";
 import BackButton from "../components/backButton/BackButton";
 
-type MyRecipesNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "MyRecipes"
->;
+type MyRecipesNavigationProp = StackNavigationProp<RootStackParamList, "MyRecipes">;
 
 export default function MyRecipesScreen() {
-  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark, fetchBookmarks, fetchMoreBookmarks, loading, loadingMore } = useBookmarks();
   const { handleShareRecipe } = useShareRecipe();
   const navigation = useNavigation<MyRecipesNavigationProp>();
 
-  if (!bookmarkedRecipes) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#FF6F61" />
-        <Text style={styles.loadingText}>Loading your saved recipes...</Text>
-      </View>
-    );
-  }
-
-  if (bookmarkedRecipes.length === 0) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>You have no saved recipes yet.</Text>
-      </View>
-    );
-  }
+  useEffect(() => {
+    fetchBookmarks();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -42,30 +26,56 @@ export default function MyRecipesScreen() {
         <BackButton />
         <Text style={styles.header}>My Recipes</Text>
       </View>
-      <FlatList
-        data={bookmarkedRecipes}
-        keyExtractor={(item) => item.recipeId.toString()}
-        renderItem={({ item }) => (
-          <ListCard
-            recipeId={item.recipeId}
-            title={item.title}
-            image={item.image}
-            isBookmarked={true}
-            onBookmarkPress={() => toggleBookmark(item)}
-            onSharePress={() =>
-              handleShareRecipe({
-                recipeId: item.recipeId,
-                title: item.title,
-                image: item.image,
-              })
-            }
-            onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
-            }
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-      />
+
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="#FF6F61" />
+          <Text style={styles.loadingText}>Loading your saved recipes...</Text>
+        </View>
+      ) : bookmarkedRecipes.length === 0 ? (
+        <View style={styles.center}>
+          <Text style={styles.errorText}>You have no saved recipes yet.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={bookmarkedRecipes}
+          keyExtractor={(item) => item.recipeId.toString()}
+          renderItem={({ item }) => (
+            <ListCard
+              recipeId={item.recipeId}
+              title={item.title}
+              image={item.image}
+              isBookmarked={true}
+              onBookmarkPress={() => toggleBookmark(item)}
+              onSharePress={() =>
+                handleShareRecipe({
+                  recipeId: item.recipeId,
+                  title: item.title,
+                  image: item.image,
+                })
+              }
+              onPress={() =>
+                navigation.navigate("RecipeDetails", { recipeId: item.recipeId })
+              }
+            />
+          )}
+          contentContainerStyle={styles.listContent}
+          ListFooterComponent={
+            <View style={styles.footer}>
+              {loadingMore ? (
+                <View style={styles.footer}>
+                  <ActivityIndicator size="small" color="#FF6F61" />
+                  <Text style={styles.loadingText}>Loading more recipes...</Text>
+                </View>
+              ) : (
+                <TouchableOpacity style={styles.loadMoreButton} onPress={fetchMoreBookmarks}>
+                  <Text style={styles.loadMoreButtonText}>Load More</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          }
+        />
+      )}
     </View>
-  );  
+  );
 }
