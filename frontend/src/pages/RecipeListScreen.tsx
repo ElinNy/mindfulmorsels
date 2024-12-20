@@ -72,7 +72,7 @@ export default function RecipeListScreen() {
 
   const handleSearchWithFlag = () => {
     setHasSearched(true);
-    setShowFilters(false); // Stänger dropdownen när sökningen utförs
+    setShowFilters(false); 
     setNoMoreData(false);
     handleSearch();
   };
