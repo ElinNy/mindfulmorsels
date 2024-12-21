@@ -175,7 +175,7 @@ export default function RecipeListScreen() {
             }
           />
         )}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={{...styles.listContent, paddingBottom: 150}}
         ListFooterComponent={
           hasSearched && recipes.length > 0 ? (
             <View style={styles.footer}>
