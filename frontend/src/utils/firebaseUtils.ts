@@ -1,5 +1,5 @@
 import { db, auth } from "../firebase/firebaseConfig";
-import { doc, setDoc, deleteDoc, getDoc, Timestamp, collection, getDocs } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc, Timestamp, collection, getDocs, DocumentSnapshot, query, orderBy, limit, startAfter } from "firebase/firestore";
 import { Bookmark } from "../types/types";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -171,6 +171,34 @@ export const getLikedRecipes = async (): Promise<any[]> => {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error fetching liked recipes:", error);
+    throw error;
+  }
+};
+
+/**
+ * Hämtar en sida med delade recept från Firestore.
+ * @param pageSize Antal recept per sida.
+ * @param lastDoc Det sista dokumentet från föregående hämtning för paginering.
+ * @returns En lista med delade recept och en referens till det sista dokumentet.
+ */
+export const fetchPaginatedSharedRecipes = async (
+  pageSize: number,
+  lastDoc: DocumentSnapshot | null = null
+): Promise<{ recipes: any[]; lastVisible: DocumentSnapshot | null }> => {
+  try {
+    let q = query(collection(db, "sharedRecipes"), orderBy("timestamp", "desc"), limit(pageSize));
+
+    if (lastDoc) {
+      q = query(collection(db, "sharedRecipes"), orderBy("timestamp", "desc"), startAfter(lastDoc), limit(pageSize));
+    }
+
+    const snapshot = await getDocs(q);
+    const recipes = snapshot.docs.map((doc) => ({ recipeId: Number(doc.id), ...doc.data() }));
+    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+    return { recipes, lastVisible };
+  } catch (error) {
+    console.error("Error fetching paginated shared recipes:", error);
     throw error;
   }
 };

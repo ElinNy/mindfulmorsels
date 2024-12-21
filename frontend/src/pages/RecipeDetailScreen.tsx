@@ -58,9 +58,11 @@ export default function RecipeDetailsScreen({ route }: any) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <BackButton />
+      <View style={styles.headerContainer}>
+        <BackButton />
+        <Text style={styles.headerTitle}>Recipe Details</Text>
+      </View>
       <Image source={{ uri: recipe.image }} style={styles.image} />
-      <View style={styles.header}>
         <Text style={styles.title}>{recipe.title}</Text>
         <BookmarkIcon
           isBookmarked={isBookmarked}
@@ -72,7 +74,6 @@ export default function RecipeDetailsScreen({ route }: any) {
             })
           }
         />
-      </View>
       <Text style={styles.sectionPortions}>Servings: {recipe.servings}</Text>
       <Text style={styles.sectionTitle}>Ingredients:</Text>
       {recipe.extendedIngredients.map((ingredient: any) => (

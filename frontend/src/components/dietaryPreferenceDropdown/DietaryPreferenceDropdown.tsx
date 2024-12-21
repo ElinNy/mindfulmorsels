@@ -21,7 +21,13 @@ const DietaryPreferenceDropdown: React.FC<Props> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const handleTogglePreference = (preference: string) => {
+    onTogglePreference(preference);
+  };
 
   return (
     <View style={styles.container}>
@@ -45,7 +51,7 @@ const DietaryPreferenceDropdown: React.FC<Props> = ({
             <View style={styles.preferenceItem}>
               <Checkbox
                 value={selectedPreferences.includes(item.id)}
-                onValueChange={() => onTogglePreference(item.id)}
+                onValueChange={() => handleTogglePreference(item.id)}
                 color={selectedPreferences.includes(item.id) ? "#3DA510" : undefined}
               />
               <Text style={styles.preferenceText}>{item.label}</Text>

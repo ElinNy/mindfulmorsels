@@ -57,5 +57,15 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     fontSize: 16,
     color: "#3DA510"
-  }
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color:"#545454",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
 });
