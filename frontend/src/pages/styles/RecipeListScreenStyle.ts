@@ -104,12 +104,12 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
   },
   listContent: {
-    paddingBottom: 0,
+    paddingBottom: 150,
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    color:"#545454",
+    color: "#545454",
   },
   headerContainer: {
     flexDirection: "row",
@@ -117,18 +117,15 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   footer: {
-    marginBottom:150,
     justifyContent: "center",
     alignItems: "center",
   },
-
   loadMoreButton: {
     backgroundColor: "#FF6F61",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
-
   loadMoreButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
@@ -139,33 +136,26 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  
   placeholderImage: {
     width: "100%",
-    height: 400,
+    height: 300,
     resizeMode: "cover",
     marginBottom: 20,
-    marginTop: 250,
-    borderRadius:8,
+    borderRadius: 8,
+    top: 70
   },
-  
   placeholderText: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#545454",
     textAlign: "center",
+    top:70,
   },
-  
   dropdownContainer: {
-    position: "absolute",
-    top: 200,
-    left: 0,
-    right: 0,
     backgroundColor: "#fff",
     zIndex: 10,
     padding: 16,
     borderRadius: 10,
     elevation: 5,
   },
-  
 });
