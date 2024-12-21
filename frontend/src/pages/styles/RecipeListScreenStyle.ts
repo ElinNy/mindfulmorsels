@@ -142,14 +142,14 @@ export const styles = StyleSheet.create({
     resizeMode: "cover",
     marginBottom: 20,
     borderRadius: 8,
-    top: 70
+    top: 100
   },
   placeholderText: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#545454",
     textAlign: "center",
-    top:70,
+    top:100,
   },
   dropdownContainer: {
     backgroundColor: "#fff",
