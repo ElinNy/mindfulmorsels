@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   addButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: "#3DA510",
+    backgroundColor: "#ccc",
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",

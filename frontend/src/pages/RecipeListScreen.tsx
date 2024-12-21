@@ -72,7 +72,7 @@ export default function RecipeListScreen() {
 
   const handleSearchWithFlag = () => {
     setHasSearched(true);
-    setShowFilters(false); 
+    setShowFilters(false);
     setNoMoreData(false);
     handleSearch();
   };
@@ -96,7 +96,10 @@ export default function RecipeListScreen() {
           value={ingredientInput}
           onChangeText={setIngredientInput}
         />
-        <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddIngredient}
+        >
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
@@ -108,7 +111,9 @@ export default function RecipeListScreen() {
             source={require("../../assets/images/pic6.jpg")}
             style={styles.placeholderImage}
           />
-          <Text style={styles.placeholderText}>Add ingredients to find recipes!</Text>
+          <Text style={styles.placeholderText}>
+            Add ingredients to find recipes!
+          </Text>
         </View>
       )}
 
@@ -136,16 +141,18 @@ export default function RecipeListScreen() {
             onTogglePreference={togglePreference}
           />
           <ServingFilter onChange={setServings} />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearchWithFlag}>
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={handleSearchWithFlag}
+          >
             <Text style={styles.searchButtonText}>Find Recipes</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      {/* Visar receptlista */}
       <FlatList
         data={recipes}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ListCard
             recipeId={item.id}
@@ -175,11 +182,16 @@ export default function RecipeListScreen() {
               {loadingMore ? (
                 <>
                   <ActivityIndicator size="small" color="#FF6F61" />
-                  <Text style={styles.loadingText}>Loading more recipes...</Text>
+                  <Text style={styles.loadingText}>
+                    Loading more recipes...
+                  </Text>
                 </>
               ) : (
                 !noMoreData && (
-                  <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreRecipes}>
+                  <TouchableOpacity
+                    style={styles.loadMoreButton}
+                    onPress={loadMoreRecipes}
+                  >
                     <Text style={styles.loadMoreButtonText}>Load More</Text>
                   </TouchableOpacity>
                 )
@@ -187,6 +199,8 @@ export default function RecipeListScreen() {
             </View>
           ) : null
         }
+        nestedScrollEnabled={true}
+        keyboardShouldPersistTaps="handled"
       />
     </View>
   );
