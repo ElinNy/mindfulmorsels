@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  ActivityIndicator,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, Image, ActivityIndicator, ScrollView, Alert } from "react-native";
 import { getRecipeDetails } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeDetailScreenStyle";
 import BookmarkIcon from "../components/bookmark/BookmarkIcon";
-import { useBookmarks } from "../hooks/useBookmarks";
+import { useBookmarks } from "../context/BookmarkContext";
 import BackButton from "../components/backButton/BackButton";
 
 export default function RecipeDetailsScreen({ route }: any) {
@@ -20,7 +13,7 @@ export default function RecipeDetailsScreen({ route }: any) {
   const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
 
   const isBookmarked = bookmarkedRecipes.some(
-    (bookmark) => bookmark.recipeId === recipeId
+    (bookmark) => String(bookmark.recipeId) === String(recipeId)
   );
 
   useEffect(() => {
@@ -29,13 +22,11 @@ export default function RecipeDetailsScreen({ route }: any) {
         const details = await getRecipeDetails(recipeId);
         setRecipe(details);
       } catch (error) {
-        console.error("Error fetching recipe details:", error);
-        Alert.alert("Fel", "Kunde inte hämta receptdetaljer.");
+        Alert.alert("Error", "Could not fetch recipe details.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchDetails();
   }, [recipeId]);
 
@@ -43,7 +34,7 @@ export default function RecipeDetailsScreen({ route }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#FF6F61" />
-        <Text style={styles.loadingText}>Laddar receptdetaljer...</Text>
+        <Text style={styles.loadingText}>Loading recipe details...</Text>
       </View>
     );
   }
@@ -51,7 +42,7 @@ export default function RecipeDetailsScreen({ route }: any) {
   if (!recipe) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>Kunde inte ladda receptdetaljer.</Text>
+        <Text style={styles.errorText}>Recipe details could not be loaded.</Text>
       </View>
     );
   }
@@ -63,17 +54,17 @@ export default function RecipeDetailsScreen({ route }: any) {
         <Text style={styles.headerTitle}>Recipe Details</Text>
       </View>
       <Image source={{ uri: recipe.image }} style={styles.image} />
-        <Text style={styles.title}>{recipe.title}</Text>
-        <BookmarkIcon
-          isBookmarked={isBookmarked}
-          onPress={() =>
-            toggleBookmark({
-              id: recipeId,
-              title: recipe.title,
-              image: recipe.image,
-            })
-          }
-        />
+      <Text style={styles.title}>{recipe.title}</Text>
+      <BookmarkIcon
+        isBookmarked={isBookmarked}
+        onPress={() =>
+          toggleBookmark({
+            recipeId: recipeId,
+            title: recipe.title,
+            image: recipe.image,
+          })
+        }
+      />
       <Text style={styles.sectionPortions}>Servings: {recipe.servings}</Text>
       <Text style={styles.sectionTitle}>Ingredients:</Text>
       {recipe.extendedIngredients.map((ingredient: any) => (
@@ -83,7 +74,7 @@ export default function RecipeDetailsScreen({ route }: any) {
       ))}
       <Text style={styles.sectionTitle}>Instructions:</Text>
       <Text style={styles.text}>
-        {recipe.instructions || "Inga instruktioner tillgängliga."}
+        {recipe.instructions || "No instructions available."}
       </Text>
     </ScrollView>
   );

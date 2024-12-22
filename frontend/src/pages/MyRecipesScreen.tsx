@@ -11,44 +11,45 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import { styles } from "./styles/MyRecipesScreenStyle";
 import ListCard from "../components/listcard/ListCard";
-import { useBookmarks } from "../hooks/useBookmarks";
+import { useBookmarks } from "../context/BookmarkContext"; // Använd BookmarkContext
 import { useShareRecipe } from "../hooks/useShareRecipe";
 import BackButton from "../components/backButton/BackButton";
 
-type MyRecipesNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "MyRecipes"
->;
+type MyRecipesNavigationProp = StackNavigationProp<RootStackParamList, "MyRecipes">;
 
 export default function MyRecipesScreen() {
-  const {
-    bookmarkedRecipes,
-    toggleBookmark,
-    fetchBookmarks,
-    fetchMoreBookmarks,
-    loading,
-    loadingMore,
-  } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark, loading } = useBookmarks(); // Hämtar från BookmarkContext
   const { handleShareRecipe } = useShareRecipe();
   const navigation = useNavigation<MyRecipesNavigationProp>();
+  const [paginatedBookmarks, setPaginatedBookmarks] = useState<any[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [noMoreData, setNoMoreData] = useState(false);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
-    fetchBookmarks();
-  }, []);
-
-  const loadMoreBookmarks = async () => {
-    if (loadingMore) return;
-
-    try {
-      const newBookmarks = await fetchMoreBookmarks();
-
-      if (newBookmarks.length < 10) {
-        setNoMoreData(true);
-      }
-    } catch (error) {
-      console.error("Error loading more bookmarks:", error);
+    if (!loading && bookmarkedRecipes.length > 0) {
+      loadInitialBookmarks();
     }
+  }, [loading, bookmarkedRecipes]);
+
+  const loadInitialBookmarks = () => {
+    const initialData = bookmarkedRecipes.slice(0, PAGE_SIZE);
+    setPaginatedBookmarks(initialData);
+    setNoMoreData(initialData.length >= bookmarkedRecipes.length);
+  };
+
+  const loadMoreBookmarks = () => {
+    if (loadingMore || noMoreData) return;
+
+    setLoadingMore(true);
+    const nextData = bookmarkedRecipes.slice(
+      paginatedBookmarks.length,
+      paginatedBookmarks.length + PAGE_SIZE
+    );
+
+    setPaginatedBookmarks((prev) => [...prev, ...nextData]);
+    setNoMoreData(paginatedBookmarks.length + nextData.length >= bookmarkedRecipes.length);
+    setLoadingMore(false);
   };
 
   return (
@@ -63,13 +64,13 @@ export default function MyRecipesScreen() {
           <ActivityIndicator size="large" color="#FF6F61" />
           <Text style={styles.loadingText}>Loading your saved recipes...</Text>
         </View>
-      ) : bookmarkedRecipes.length === 0 ? (
+      ) : paginatedBookmarks.length === 0 ? (
         <View style={styles.center}>
           <Text style={styles.errorText}>You have no saved recipes yet.</Text>
         </View>
       ) : (
         <FlatList
-          data={bookmarkedRecipes}
+          data={paginatedBookmarks}
           keyExtractor={(item) => item.recipeId.toString()}
           renderItem={({ item }) => (
             <ListCard

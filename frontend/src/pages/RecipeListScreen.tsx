@@ -14,7 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import ListCard from "../components/listcard/ListCard";
-import { useBookmarks } from "../hooks/useBookmarks";
+import { useBookmarks } from "../context/BookmarkContext";
 import { useShareRecipe } from "../hooks/useShareRecipe";
 import DietaryPreferenceDropdown from "../components/dietaryPreferenceDropdown/DietaryPreferenceDropdown";
 import { usePreferences } from "../hooks/usePreferences";
@@ -31,12 +31,18 @@ const dietaryPreferences = [
   { id: "vegan", label: "Veganskt" },
 ];
 
+interface Recipe {
+  id: number; 
+  title: string;
+  image: string;
+}
+
 export default function RecipeListScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { handleShareRecipe } = useShareRecipe();
-  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark, loading } = useBookmarks();
   const { selectedPreferences, togglePreference } = usePreferences();
-  const [recipes, setRecipes] = useState<any[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
   const [servings, setServings] = useState<number | null>(null);
@@ -44,14 +50,13 @@ export default function RecipeListScreen() {
   const [noMoreData, setNoMoreData] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
-  const { handleSearch, loadMoreRecipes, loading, loadingMore, error } =
-    useRecipeActions(
-      ingredients,
-      selectedPreferences,
-      servings,
-      setRecipes,
-      setNoMoreData
-    );
+  const { handleSearch, loadMoreRecipes, loadingMore, error } = useRecipeActions(
+    ingredients,
+    selectedPreferences,
+    servings,
+    setRecipes,
+    setNoMoreData
+  );
 
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
@@ -84,7 +89,6 @@ export default function RecipeListScreen() {
         <Text style={styles.header}>Generate Recipes</Text>
       </View>
 
-      {/* Inputfält och "Add Ingredient"-knapp */}
       <View style={styles.inputContainer}>
         <Image
           source={require("../../assets/icons/ingredients.png")}
@@ -96,15 +100,11 @@ export default function RecipeListScreen() {
           value={ingredientInput}
           onChangeText={setIngredientInput}
         />
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={handleAddIngredient}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Placeholder-bild och rubrik */}
       {!hasSearched && recipes.length === 0 && (
         <View style={styles.placeholderContainer}>
           <Image
@@ -117,7 +117,6 @@ export default function RecipeListScreen() {
         </View>
       )}
 
-      {/* Lista med ingredienser som piller */}
       <View style={styles.pillContainer}>
         {ingredients.map((ingredient, index) => (
           <View key={index} style={styles.pill}>
@@ -132,7 +131,6 @@ export default function RecipeListScreen() {
         ))}
       </View>
 
-      {/* Filterkomponenter och sökknapp */}
       {showFilters && (
         <View style={styles.dropdownContainer}>
           <DietaryPreferenceDropdown
@@ -159,9 +157,15 @@ export default function RecipeListScreen() {
             title={item.title}
             image={item.image}
             isBookmarked={bookmarkedRecipes.some(
-              (bookmark) => bookmark.recipeId === item.id
+              (bookmark) => String(bookmark.recipeId) === String(item.id)
             )}
-            onBookmarkPress={() => toggleBookmark(item)}
+            onBookmarkPress={() =>
+              toggleBookmark({
+                recipeId: item.id,
+                title: item.title,
+                image: item.image,
+              })
+            }
             onPress={() =>
               navigation.navigate("RecipeDetails", { recipeId: item.id })
             }
