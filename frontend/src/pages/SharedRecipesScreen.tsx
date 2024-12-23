@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { styles } from "./styles/SharedRecipesScreenStyle";
 import ListCard from "../components/listcard/ListCard";
 import { fetchPaginatedSharedRecipes } from "../utils/firebaseUtils";
-import { useBookmarks } from "../hooks/useBookmarks";
+import { useBookmarks } from "../context/BookmarkContext";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import { useNavigation } from "@react-navigation/native";
@@ -15,7 +21,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
 export default function SharedRecipesScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { bookmarkedRecipes, toggleBookmark, fetchBookmarks } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
   const [sharedRecipes, setSharedRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -24,7 +30,6 @@ export default function SharedRecipesScreen() {
 
   useEffect(() => {
     loadInitialRecipes();
-    fetchBookmarks();
   }, []);
 
   const loadInitialRecipes = async () => {
@@ -43,15 +48,15 @@ export default function SharedRecipesScreen() {
 
   const loadMoreRecipes = async () => {
     if (loadingMore || !lastDoc) return;
-  
+
     try {
       setLoadingMore(true);
-      const { recipes, lastVisible } = await fetchPaginatedSharedRecipes(11, lastDoc); 
-  
+      const { recipes, lastVisible } = await fetchPaginatedSharedRecipes(11, lastDoc);
+
       if (recipes.length <= 10) {
         setLastDoc(null);
       }
-  
+
       setSharedRecipes((prev) => [...prev, ...recipes.slice(0, 10)]);
 
       if (recipes.length === 11) {
@@ -95,10 +100,17 @@ export default function SharedRecipesScreen() {
                 recipeId={item.recipeId}
                 title={item.title}
                 image={item.image}
-                isBookmarked={bookmarkedRecipes.some((bookmark) => bookmark.recipeId === item.recipeId)}
-                onPress={() => navigation.navigate("RecipeDetails", { recipeId: item.recipeId })}
+                isBookmarked={bookmarkedRecipes.some(
+                  (bookmark) => String(bookmark.recipeId) === String(item.recipeId)
+                )}
                 onBookmarkPress={() => toggleBookmark(item)}
+                onPress={() =>
+                  navigation.navigate("RecipeDetails", {
+                    recipeId: item.recipeId,
+                  })
+                }
               />
+
               <Rating recipeId={item.recipeId} />
             </View>
           )}
@@ -107,15 +119,20 @@ export default function SharedRecipesScreen() {
               {loadingMore ? (
                 <View style={styles.footer}>
                   <ActivityIndicator size="small" color="#FF6F61" />
-                  <Text style={styles.loadingText}>Loading more recipes...</Text>
+                  <Text style={styles.loadingText}>
+                    Loading more recipes...
+                  </Text>
                 </View>
               ) : lastDoc ? (
-                <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreRecipes}>
+                <TouchableOpacity
+                  style={styles.loadMoreButton}
+                  onPress={loadMoreRecipes}
+                >
                   <Text style={styles.loadMoreButtonText}>Load More</Text>
                 </TouchableOpacity>
               ) : null}
             </View>
-          }   
+          }
         />
       )}
     </View>

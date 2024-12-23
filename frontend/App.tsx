@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navigation from "./src/components/navigation/Navbar";
 import Footer from "./src/components/footer/Footer";
 import GoogleLoginScreen from "./src/pages/auth/googleAuth";
+import { BookmarkProvider } from "./src/context/BookmarkContext";
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,7 @@ export default function App() {
   }
 
   return (
+    <BookmarkProvider>
     <NavigationContainer>
       <View style={styles.appContainer}>
         <Navigation user={user} />
@@ -77,6 +79,7 @@ export default function App() {
         <Footer />
       </View>
     </NavigationContainer>
+    </BookmarkProvider>
   );
   
 }

@@ -41,10 +41,9 @@ export const addBookmark = async (recipe: any): Promise<void> => {
     throw new Error("Användaren är inte inloggad.");
   }
 
-  const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipe.id.toString());
-
+  const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipe.id || recipe.recipeId);
   const bookmark: Bookmark = {
-    recipeId: recipe.id,
+    recipeId: recipe.id || recipe.recipeId,
     title: recipe.title,
     image: recipe.image,
     createdAt: Timestamp.fromDate(new Date()),
@@ -53,11 +52,7 @@ export const addBookmark = async (recipe: any): Promise<void> => {
   await setDoc(bookmarkRef, bookmark);
 };
 
-/**
- * Tar bort ett recept från användarens bokmärken.
- * @param recipeId 
- */
-export const removeBookmark = async (recipeId: number): Promise<void> => {
+export const removeBookmark = async (recipeId: number | string): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
     throw new Error("Användaren är inte inloggad.");
@@ -66,23 +61,6 @@ export const removeBookmark = async (recipeId: number): Promise<void> => {
   const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipeId.toString());
   await deleteDoc(bookmarkRef);
 };
-
-/**
- * Kontrollerar om ett recept är bokmärkt av den aktuella användaren.
- * @param recipeId 
- * @returns Booleskt värde som indikerar om receptet är bokmärkt.
- */
-export const isBookmarked = async (recipeId: number): Promise<boolean> => {
-  const user = auth.currentUser;
-  if (!user) {
-    return false;
-  }
-
-  const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipeId.toString());
-  const docSnap = await getDoc(bookmarkRef);
-  return docSnap.exists();
-};
-
 
 
 export const shareRecipe = async (recipe: any): Promise<void> => {
