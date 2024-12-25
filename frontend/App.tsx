@@ -16,8 +16,9 @@ import Navigation from "./src/components/navigation/Navbar";
 import Footer from "./src/components/footer/Footer";
 import GoogleLoginScreen from "./src/pages/auth/googleAuth";
 import { BookmarkProvider } from "./src/context/BookmarkContext";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const Stack = createStackNavigator();
+const queryClient = new QueryClient()
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -59,6 +60,7 @@ export default function App() {
   }
 
   return (
+    <QueryClientProvider client={queryClient}>
     <BookmarkProvider>
     <NavigationContainer>
       <View style={styles.appContainer}>
@@ -80,6 +82,7 @@ export default function App() {
       </View>
     </NavigationContainer>
     </BookmarkProvider>
+    </QueryClientProvider>
   );
   
 }

@@ -20,7 +20,7 @@ import DietaryPreferenceDropdown from "../components/dietaryPreferenceDropdown/D
 import { usePreferences } from "../hooks/usePreferences";
 import ServingFilter from "../components/servingFilter/ServingFilter";
 import BackButton from "../components/backButton/BackButton";
-import { useRecipeActions } from "../hooks/useLoadMoreRecipes";
+import { useRecipes } from "../hooks/useRecipes";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -31,32 +31,27 @@ const dietaryPreferences = [
   { id: "vegan", label: "Veganskt" },
 ];
 
-interface Recipe {
-  id: number; 
-  title: string;
-  image: string;
-}
-
 export default function RecipeListScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { handleShareRecipe } = useShareRecipe();
-  const { bookmarkedRecipes, toggleBookmark, loading } = useBookmarks();
+  const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
   const { selectedPreferences, togglePreference } = usePreferences();
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
   const [servings, setServings] = useState<number | null>(null);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
-  const [noMoreData, setNoMoreData] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
-  const { handleSearch, loadMoreRecipes, loadingMore, error } = useRecipeActions(
-    ingredients,
-    selectedPreferences,
-    servings,
-    setRecipes,
-    setNoMoreData
-  );
+  const {
+    recipes,
+    isLoading,
+    handleSearch,
+    loadMoreRecipes,
+    hasNextPage,
+    isFetchingNextPage,
+    error,
+  } = useRecipes(ingredients, selectedPreferences, servings);
 
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
@@ -78,7 +73,6 @@ export default function RecipeListScreen() {
   const handleSearchWithFlag = () => {
     setHasSearched(true);
     setShowFilters(false);
-    setNoMoreData(false);
     handleSearch();
   };
 
@@ -100,7 +94,10 @@ export default function RecipeListScreen() {
           value={ingredientInput}
           onChangeText={setIngredientInput}
         />
-        <TouchableOpacity style={styles.addButton} onPress={handleAddIngredient}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddIngredient}
+        >
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
@@ -148,64 +145,57 @@ export default function RecipeListScreen() {
         </View>
       )}
 
-      <FlatList
-        data={recipes}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <ListCard
-            recipeId={item.id}
-            title={item.title}
-            image={item.image}
-            isBookmarked={bookmarkedRecipes.some(
-              (bookmark) => String(bookmark.recipeId) === String(item.id)
-            )}
-            onBookmarkPress={() =>
-              toggleBookmark({
-                recipeId: item.id,
-                title: item.title,
-                image: item.image,
-              })
-            }
-            onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.id })
-            }
-            showShareIcon={true}
-            onSharePress={() =>
-              handleShareRecipe({
-                recipeId: item.id,
-                title: item.title,
-                image: item.image,
-              })
-            }
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-        ListFooterComponent={
-          hasSearched && recipes.length > 0 ? (
-            <View style={styles.footer}>
-              {loadingMore ? (
-                <>
-                  <ActivityIndicator size="small" color="#FF6F61" />
-                  <Text style={styles.loadingText}>
-                    Loading more recipes...
-                  </Text>
-                </>
-              ) : (
-                !noMoreData && (
-                  <TouchableOpacity
-                    style={styles.loadMoreButton}
-                    onPress={loadMoreRecipes}
-                  >
-                    <Text style={styles.loadMoreButtonText}>Load More</Text>
-                  </TouchableOpacity>
-                )
+      {isLoading && (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="#FF6F61" />
+        </View>
+      )}
+
+      {hasSearched && recipes.length > 0 && (
+        <FlatList
+          data={recipes}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ListCard
+              recipeId={item.id}
+              title={item.title}
+              image={item.image}
+              isBookmarked={bookmarkedRecipes.some(
+                (bookmark) => String(bookmark.recipeId) === String(item.id)
               )}
-            </View>
-          ) : null
-        }
-        nestedScrollEnabled={true}
-        keyboardShouldPersistTaps="handled"
-      />
+              onBookmarkPress={() => toggleBookmark(item)}
+              onPress={() =>
+                navigation.navigate("RecipeDetails", { recipeId: item.id })
+              }
+              showShareIcon={true}
+              onSharePress={() =>
+                handleShareRecipe({
+                  recipeId: item.id,
+                  title: item.title,
+                  image: item.image,
+                })
+              }
+            />
+          )}
+          contentContainerStyle={styles.listContent}
+          ListFooterComponent={
+            hasNextPage ? (
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  style={styles.loadMoreButton}
+                  onPress={loadMoreRecipes}
+                >
+                  {isFetchingNextPage ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Text style={styles.loadMoreButtonText}>Load More</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : null
+          }
+        />
+      )}
     </View>
   );
 }
