@@ -107,14 +107,14 @@ export const styles = StyleSheet.create({
     paddingBottom: 150,
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#545454",
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   footer: {
     justifyContent: "center",
