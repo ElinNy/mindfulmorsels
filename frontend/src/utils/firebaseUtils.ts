@@ -38,7 +38,7 @@ export const checkSession = async (): Promise<void> => {
 export const addBookmark = async (recipe: any): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipe.id || recipe.recipeId);
@@ -55,7 +55,7 @@ export const addBookmark = async (recipe: any): Promise<void> => {
 export const removeBookmark = async (recipeId: number | string): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipeId.toString());
@@ -77,7 +77,6 @@ export const shareRecipe = async (recipe: any): Promise<void> => {
       sharedBy: user.uid,
       timestamp: Timestamp.fromDate(new Date()),
     });
-    console.log("Recipe shared successfully!");
   } catch (error) {
     console.error("Error sharing recipe:", error);
     throw error;
@@ -92,7 +91,7 @@ export const shareRecipe = async (recipe: any): Promise<void> => {
 export const addLikedRecipe = async (recipe: any, rating: number): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const likedRecipeRef = doc(db, "likedRecipes", user.uid, "recipes", recipe.id.toString());
@@ -106,7 +105,6 @@ export const addLikedRecipe = async (recipe: any, rating: number): Promise<void>
 
   try {
     await setDoc(likedRecipeRef, likedRecipe);
-    console.log("Recipe liked successfully!");
   } catch (error) {
     console.error("Error liking recipe:", error);
     throw error;
@@ -120,14 +118,13 @@ export const addLikedRecipe = async (recipe: any, rating: number): Promise<void>
 export const removeLikedRecipe = async (recipeId: number): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const likedRecipeRef = doc(db, "likedRecipes", user.uid, "recipes", recipeId.toString());
 
   try {
     await deleteDoc(likedRecipeRef);
-    console.log("Recipe unliked successfully!");
   } catch (error) {
     console.error("Error unliking recipe:", error);
     throw error;
@@ -141,7 +138,7 @@ export const removeLikedRecipe = async (recipeId: number): Promise<void> => {
 export const getLikedRecipes = async (): Promise<any[]> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   try {

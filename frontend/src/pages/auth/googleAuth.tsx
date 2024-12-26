@@ -17,7 +17,6 @@ export default function GoogleLoginScreen() {
   });
 
   useEffect(() => {
-    console.log("useEffect körs med response:", response);
 
     if (response?.type === "success") {
       const { id_token } = response.params;
@@ -25,7 +24,6 @@ export default function GoogleLoginScreen() {
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential)
         .then((userCredential) => {
-          console.log("Inloggad användare:", userCredential.user);
         })
         .catch((error) => {
           console.error("Fel vid Google-inloggning:", error);
@@ -33,9 +31,7 @@ export default function GoogleLoginScreen() {
     } else if (response?.type === "error") {
       console.error("Google-inloggningsfel:", response.error);
     } else if (response?.type === "cancel") {
-      console.log("Inloggningsförsöket avbröts.");
     } else if (response?.type === "locked") {
-      console.log("En annan inloggningsprocess är redan aktiv.");
     }
   }, [response]);
 
@@ -45,8 +41,6 @@ export default function GoogleLoginScreen() {
     setLoading(true);
     const result = await promptAsync();
     setLoading(false);
-
-    console.log("Resultat från promptAsync:", result);
   };
 
   return (

@@ -33,11 +33,9 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       try {
         if (currentUser) {
-          console.log("User logged in:", currentUser.email);
           setUser(currentUser);
           await AsyncStorage.setItem("user", JSON.stringify(currentUser));
         } else {
-          console.log("No user logged in.");
           setUser(null);
           await AsyncStorage.removeItem("user");
         }
