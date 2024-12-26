@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F8F8F8",
-    padding: 10,
+    // padding: 10,
   },
   textContainer: {
     alignSelf: "flex-start",
@@ -32,8 +32,8 @@ export const styles = StyleSheet.create({
     marginVertical: 20,
   },
   imageContainer: {
-    width: 180,
-    height: 180,
+    width: 150,
+    height: 150,
     borderRadius: 10,
     backgroundColor: "#fff", 
     shadowColor: "#000",
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 8,
-    marginVertical: 20,
+    marginVertical: 10,
   },
   buttonText: {
     color: "#FFFFFF",
