@@ -41,14 +41,12 @@ export default function HomeScreen() {
       <View style={styles.textContainer}>
         {displayName ? (
           <>
-            <Text style={styles.title}>Hello, {displayName}!</Text>
             <Text style={styles.subtitle}>
               Start generating recipes to reduce waste.
             </Text>
           </>
         ) : (
           <>
-            <Text style={styles.title}>Welcome to Mindful Morsels!</Text>
             <Text style={styles.subtitle}>
               Your guide to reducing food waste.
             </Text>
