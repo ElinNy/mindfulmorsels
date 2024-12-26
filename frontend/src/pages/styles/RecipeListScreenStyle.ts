@@ -114,7 +114,6 @@ export const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
   },
   footer: {
     justifyContent: "center",

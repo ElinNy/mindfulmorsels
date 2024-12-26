@@ -4,15 +4,14 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    padding: 16,
+    paddingHorizontal: 16,
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color:"#545454",
   },
