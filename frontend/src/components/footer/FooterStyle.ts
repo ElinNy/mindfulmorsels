@@ -2,19 +2,18 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   footerContainer: {
-    backgroundColor: "#3DA510",
+    backgroundColor: "#fff",
     opacity: 0.7,
-    padding: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   footerText: {
-    color: "#FFFFFF",
+    color: "#3DA510",
     fontSize: 16,
   },
   linkText: {
     fontFamily: "Poppins-Bold",
-    color: "#F9F8F8",
+    color: "#3DA510",
     textDecorationLine: "underline",
   },
 });
