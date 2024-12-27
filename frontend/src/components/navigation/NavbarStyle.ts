@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
+    objectFit: "contain",
     marginTop: 30,
     width: 30,
     height: 30,
