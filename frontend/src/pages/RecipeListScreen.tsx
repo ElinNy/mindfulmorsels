@@ -26,10 +26,10 @@ import IngredientPills from "../components/ingredientPill/ingredientPill";
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
 const dietaryPreferences = [
-  { id: "glutenFree", label: "Glutenfritt" },
-  { id: "dairyFree", label: "Mjölkfritt" },
-  { id: "vegetarian", label: "Vegetariskt" },
-  { id: "vegan", label: "Veganskt" },
+  { id: "glutenFree", label: "Gluten Free" },
+  { id: "dairyFree", label: "Dairy Free" },
+  { id: "vegetarian", label: "Vegetarian" },
+  { id: "vegan", label: "Vegan" },
 ];
 
 export default function RecipeListScreen() {
