@@ -21,6 +21,7 @@ import { usePreferences } from "../hooks/usePreferences";
 import ServingFilter from "../components/servingFilter/ServingFilter";
 import BackButton from "../components/backButton/BackButton";
 import { useRecipes } from "../hooks/useRecipes";
+import IngredientPills from "../components/ingredientPill/ingredientPill";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
@@ -102,6 +103,35 @@ export default function RecipeListScreen() {
         </TouchableOpacity>
       </View>
 
+      <IngredientPills
+        ingredients={ingredients}
+        onRemoveIngredient={handleRemoveIngredient}
+      />
+      {showFilters && (
+        <View style={styles.overlay}>
+          <View style={styles.dropdownContainer}>
+            <IngredientPills
+              ingredients={ingredients}
+              onRemoveIngredient={handleRemoveIngredient}
+            />
+            <View style={styles.diet}>
+              <DietaryPreferenceDropdown
+                preferences={dietaryPreferences}
+                selectedPreferences={selectedPreferences}
+                onTogglePreference={togglePreference}
+              />
+              <ServingFilter onChange={setServings} />
+            </View>
+            <TouchableOpacity
+              style={styles.searchButton}
+              onPress={handleSearchWithFlag}
+            >
+              <Text style={styles.searchButtonText}>Find Recipes</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
       {!hasSearched && recipes.length === 0 && (
         <View style={styles.placeholderContainer}>
           <Image
@@ -114,43 +144,11 @@ export default function RecipeListScreen() {
         </View>
       )}
 
-      <View style={styles.pillContainer}>
-        {ingredients.map((ingredient, index) => (
-          <View key={index} style={styles.pill}>
-            <Text style={styles.pillText}>{ingredient}</Text>
-            <TouchableOpacity
-              onPress={() => handleRemoveIngredient(ingredient)}
-              style={styles.pillCloseButton}
-            >
-              <Text style={styles.pillCloseButtonText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-
-      {showFilters && (
-        <View style={styles.dropdownContainer}>
-          <DietaryPreferenceDropdown
-            preferences={dietaryPreferences}
-            selectedPreferences={selectedPreferences}
-            onTogglePreference={togglePreference}
-          />
-          <ServingFilter onChange={setServings} />
-          <TouchableOpacity
-            style={styles.searchButton}
-            onPress={handleSearchWithFlag}
-          >
-            <Text style={styles.searchButtonText}>Find Recipes</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
       {isLoading && (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#FF6F61" />
         </View>
       )}
-
       {hasSearched && recipes.length > 0 && (
         <FlatList
           data={recipes}
@@ -161,7 +159,7 @@ export default function RecipeListScreen() {
               title={item.title}
               image={item.image}
               isBookmarked={bookmarkedRecipes.some(
-                (bookmark) => String(bookmark.recipeId) === String(item.id)
+                (bookmark) => bookmark.recipeId === item.id
               )}
               onBookmarkPress={() => toggleBookmark(item)}
               onPress={() =>

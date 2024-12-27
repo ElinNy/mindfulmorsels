@@ -43,38 +43,7 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     fontSize: 14,
   },
-  pillContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 20,
-  },
-  pill: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#3DA510",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 15,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  pillText: {
-    color: "#fff",
-    fontFamily: "Poppins-Regular",
-    marginRight: 8,
-  },
-  pillCloseButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  pillCloseButtonText: {
-    color: "#fff",
-    fontSize: 12,
-    fontFamily: "Poppins-Bold",
-  },
+
   searchButton: {
     paddingVertical: 10,
     backgroundColor: "#FF6F61",
@@ -151,8 +120,21 @@ export const styles = StyleSheet.create({
   dropdownContainer: {
     backgroundColor: "#fff",
     zIndex: 10,
-    padding: 16,
+    flex: 1,
+    // flexDirection: "row",
+    // padding: 16,
     borderRadius: 10,
     elevation: 5,
+  },
+  diet: {
+    flexDirection:"row"
+  },
+  overlay: {
+    position: "absolute",
+    top: 120,
+    left: 16,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: "white",
   },
 });
