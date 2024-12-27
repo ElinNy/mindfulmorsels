@@ -9,14 +9,9 @@ export const styles = StyleSheet.create({
   },
   textContainer: {
     alignSelf: "flex-start",
+    fontFamily: "Poppins",
     marginTop: 10,
     marginLeft: 10,
-  },
-  title: {
-    fontFamily: "Poppins-Bold",
-    color:"#545454",
-    fontSize: 44,
-    marginBottom: 10,
   },
   subtitle: {
     fontFamily: "Poppins",
