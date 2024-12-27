@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     objectFit: "contain",
+    overflow: "visible",
     marginTop: 30,
     width: 30,
     height: 30,
