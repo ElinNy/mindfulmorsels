@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingHorizontal: 16,
     backgroundColor: "#F8F8F8",
   },
   center: {
@@ -21,7 +21,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
   },
   title: {
     fontSize: 24,
@@ -57,5 +56,15 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     fontSize: 16,
     color: "#3DA510"
-  }
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color:"#545454",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
 });

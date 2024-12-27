@@ -2,9 +2,9 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: "#F8F8F8",
-    padding: 16,
+    paddingHorizontal: 16,
   },
   inputContainer: {
     flexDirection: "row",
@@ -43,38 +43,7 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     fontSize: 14,
   },
-  pillContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 20,
-  },
-  pill: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#3DA510",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 15,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  pillText: {
-    color: "#fff",
-    fontFamily: "Poppins-Regular",
-    marginRight: 8,
-  },
-  pillCloseButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  pillCloseButtonText: {
-    color: "#fff",
-    fontSize: 12,
-    fontFamily: "Poppins-Bold",
-  },
+
   searchButton: {
     paddingVertical: 10,
     backgroundColor: "#FF6F61",
@@ -104,6 +73,68 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
   },
   listContent: {
-    paddingBottom: 20,
+    paddingBottom: 150,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#545454",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  footer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadMoreButton: {
+    backgroundColor: "#FF6F61",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  loadMoreButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  placeholderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderImage: {
+    width: "100%",
+    height: 300,
+    resizeMode: "cover",
+    marginBottom: 20,
+    borderRadius: 8,
+  },
+  placeholderText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#545454",
+    textAlign: "center",
+  },
+  dropdownContainer: {
+    backgroundColor: "#fff",
+    zIndex: 10,
+    flex: 1,
+    // flexDirection: "row",
+    // padding: 16,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  diet: {
+    flexDirection:"row"
+  },
+  overlay: {
+    position: "absolute",
+    top: 120,
+    left: 16,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: "white",
   },
 });

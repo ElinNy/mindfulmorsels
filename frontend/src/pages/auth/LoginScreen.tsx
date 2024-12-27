@@ -101,6 +101,13 @@ export default function LoginScreen() {
           style={styles.switchButton}
           onPress={() => setIsLogin(!isLogin)}
         >
+          <TouchableOpacity
+            style={styles.authGoogle}
+            onPress={() => navigation.navigate("GoogleLogin")}
+          >
+            <Text style={styles.authGoogleButtonText}>Log in with Google</Text>
+          </TouchableOpacity>
+
           <Text style={styles.switchButtonText}>
             <Text style={styles.primaryText}>
               {isLogin

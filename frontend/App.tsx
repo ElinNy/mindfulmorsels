@@ -13,8 +13,12 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./src/firebase/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navigation from "./src/components/navigation/Navbar";
-
+import Footer from "./src/components/footer/Footer";
+import GoogleLoginScreen from "./src/pages/auth/googleAuth";
+import { BookmarkProvider } from "./src/context/BookmarkContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const Stack = createStackNavigator();
+const queryClient = new QueryClient()
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,11 +33,9 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       try {
         if (currentUser) {
-          console.log("User logged in:", currentUser.email);
           setUser(currentUser);
           await AsyncStorage.setItem("user", JSON.stringify(currentUser));
         } else {
-          console.log("No user logged in.");
           setUser(null);
           await AsyncStorage.removeItem("user");
         }
@@ -56,24 +58,29 @@ export default function App() {
   }
 
   return (
+    <QueryClientProvider client={queryClient}>
+    <BookmarkProvider>
     <NavigationContainer>
       <View style={styles.appContainer}>
         <Navigation user={user} />
         <Stack.Navigator
-          initialRouteName={user ? "Home" : "Login"}
           screenOptions={{
             headerShown: false,
           }}
         >
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="GoogleLogin" component={GoogleLoginScreen} />
           <Stack.Screen name="Recipes" component={RecipeListScreen} />
           <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
           <Stack.Screen name="MyRecipes" component={MyRecipesScreen} />
           <Stack.Screen name="LikedRecipes" component={SharedRecipesScreen} />
         </Stack.Navigator>
+        <Footer />
       </View>
     </NavigationContainer>
+    </BookmarkProvider>
+    </QueryClientProvider>
   );
   
 }

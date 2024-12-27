@@ -39,7 +39,7 @@ const DropdownMenu = ({ user, navigation, onLogout, closeDropdown }: DropdownMen
               navigation.navigate("LikedRecipes");
             }}
           >
-            <Text style={styles.menuText}>Liked Recipes</Text>
+            <Text style={styles.menuText}>Shared Recipes</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuItem}

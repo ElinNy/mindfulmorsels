@@ -1,5 +1,5 @@
 import { db, auth } from "../firebase/firebaseConfig";
-import { doc, setDoc, deleteDoc, getDoc, Timestamp, collection, getDocs } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc, Timestamp, collection, getDocs, DocumentSnapshot, query, orderBy, limit, startAfter } from "firebase/firestore";
 import { Bookmark } from "../types/types";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,13 +38,12 @@ export const checkSession = async (): Promise<void> => {
 export const addBookmark = async (recipe: any): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
-  const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipe.id.toString());
-
+  const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipe.id || recipe.recipeId);
   const bookmark: Bookmark = {
-    recipeId: recipe.id,
+    recipeId: recipe.id || recipe.recipeId,
     title: recipe.title,
     image: recipe.image,
     createdAt: Timestamp.fromDate(new Date()),
@@ -53,36 +52,15 @@ export const addBookmark = async (recipe: any): Promise<void> => {
   await setDoc(bookmarkRef, bookmark);
 };
 
-/**
- * Tar bort ett recept från användarens bokmärken.
- * @param recipeId 
- */
-export const removeBookmark = async (recipeId: number): Promise<void> => {
+export const removeBookmark = async (recipeId: number | string): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipeId.toString());
   await deleteDoc(bookmarkRef);
 };
-
-/**
- * Kontrollerar om ett recept är bokmärkt av den aktuella användaren.
- * @param recipeId 
- * @returns Booleskt värde som indikerar om receptet är bokmärkt.
- */
-export const isBookmarked = async (recipeId: number): Promise<boolean> => {
-  const user = auth.currentUser;
-  if (!user) {
-    return false;
-  }
-
-  const bookmarkRef = doc(db, "users", user.uid, "bookmarks", recipeId.toString());
-  const docSnap = await getDoc(bookmarkRef);
-  return docSnap.exists();
-};
-
 
 
 export const shareRecipe = async (recipe: any): Promise<void> => {
@@ -99,7 +77,6 @@ export const shareRecipe = async (recipe: any): Promise<void> => {
       sharedBy: user.uid,
       timestamp: Timestamp.fromDate(new Date()),
     });
-    console.log("Recipe shared successfully!");
   } catch (error) {
     console.error("Error sharing recipe:", error);
     throw error;
@@ -114,7 +91,7 @@ export const shareRecipe = async (recipe: any): Promise<void> => {
 export const addLikedRecipe = async (recipe: any, rating: number): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const likedRecipeRef = doc(db, "likedRecipes", user.uid, "recipes", recipe.id.toString());
@@ -128,7 +105,6 @@ export const addLikedRecipe = async (recipe: any, rating: number): Promise<void>
 
   try {
     await setDoc(likedRecipeRef, likedRecipe);
-    console.log("Recipe liked successfully!");
   } catch (error) {
     console.error("Error liking recipe:", error);
     throw error;
@@ -142,14 +118,13 @@ export const addLikedRecipe = async (recipe: any, rating: number): Promise<void>
 export const removeLikedRecipe = async (recipeId: number): Promise<void> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   const likedRecipeRef = doc(db, "likedRecipes", user.uid, "recipes", recipeId.toString());
 
   try {
     await deleteDoc(likedRecipeRef);
-    console.log("Recipe unliked successfully!");
   } catch (error) {
     console.error("Error unliking recipe:", error);
     throw error;
@@ -163,7 +138,7 @@ export const removeLikedRecipe = async (recipeId: number): Promise<void> => {
 export const getLikedRecipes = async (): Promise<any[]> => {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error("Användaren är inte inloggad.");
+    throw new Error("User not logged in.");
   }
 
   try {
@@ -171,6 +146,34 @@ export const getLikedRecipes = async (): Promise<any[]> => {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error fetching liked recipes:", error);
+    throw error;
+  }
+};
+
+/**
+ * Hämtar en sida med delade recept från Firestore.
+ * @param pageSize Antal recept per sida.
+ * @param lastDoc Det sista dokumentet från föregående hämtning för paginering.
+ * @returns En lista med delade recept och en referens till det sista dokumentet.
+ */
+export const fetchPaginatedSharedRecipes = async (
+  pageSize: number,
+  lastDoc: DocumentSnapshot | null = null
+): Promise<{ recipes: any[]; lastVisible: DocumentSnapshot | null }> => {
+  try {
+    let q = query(collection(db, "sharedRecipes"), orderBy("timestamp", "desc"), limit(pageSize));
+
+    if (lastDoc) {
+      q = query(collection(db, "sharedRecipes"), orderBy("timestamp", "desc"), startAfter(lastDoc), limit(pageSize));
+    }
+
+    const snapshot = await getDocs(q);
+    const recipes = snapshot.docs.map((doc) => ({ recipeId: Number(doc.id), ...doc.data() }));
+    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+    return { recipes, lastVisible };
+  } catch (error) {
+    console.error("Error fetching paginated shared recipes:", error);
     throw error;
   }
 };

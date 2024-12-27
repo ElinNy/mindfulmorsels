@@ -4,6 +4,16 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
+    paddingHorizontal: 16,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color:"#545454",
   },
   center: {
     flex: 1,
@@ -14,15 +24,33 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: "#737373",
-    fontFamily: "Poppins-Regular",
   },
   errorText: {
     fontSize: 16,
     color: "#FF6F61",
-    fontFamily: "Poppins-Regular",
   },
-  flatListContent: {
-    flexGrow: 1,
-    padding: 16, 
+  listContent: {
+    paddingBottom: 20,
+  },
+  listItem: {
+    marginBottom: 20,
+  },
+  footer: {
+    marginBottom:150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  loadMoreButton: {
+    backgroundColor: "#FF6F61",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+
+  loadMoreButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

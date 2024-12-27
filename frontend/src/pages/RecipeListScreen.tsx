@@ -9,27 +9,27 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { fetchRecipes, getRecipeDetails } from "../spoonacular/spoonacularAPI";
 import { styles } from "./styles/RecipeListScreenStyle";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../components/navigation/navigationTypes";
 import ListCard from "../components/listcard/ListCard";
-import { useBookmarks } from "../hooks/useBookmarks";
+import { useBookmarks } from "../context/BookmarkContext";
 import { useShareRecipe } from "../hooks/useShareRecipe";
 import DietaryPreferenceDropdown from "../components/dietaryPreferenceDropdown/DietaryPreferenceDropdown";
 import { usePreferences } from "../hooks/usePreferences";
-import { filterDietaryPreference } from "../utils/dietaryFilterUtils";
 import ServingFilter from "../components/servingFilter/ServingFilter";
 import BackButton from "../components/backButton/BackButton";
+import { useRecipes } from "../hooks/useRecipes";
+import IngredientPills from "../components/ingredientPill/ingredientPill";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
 const dietaryPreferences = [
-  { id: "glutenFree", label: "Glutenfritt" },
-  { id: "dairyFree", label: "Mjölkfritt" },
-  { id: "vegetarian", label: "Vegetariskt" },
-  { id: "vegan", label: "Veganskt" },
+  { id: "glutenFree", label: "Gluten Free" },
+  { id: "dairyFree", label: "Dairy Free" },
+  { id: "vegetarian", label: "Vegetarian" },
+  { id: "vegan", label: "Vegan" },
 ];
 
 export default function RecipeListScreen() {
@@ -37,13 +37,23 @@ export default function RecipeListScreen() {
   const { handleShareRecipe } = useShareRecipe();
   const { bookmarkedRecipes, toggleBookmark } = useBookmarks();
   const { selectedPreferences, togglePreference } = usePreferences();
-  const [recipes, setRecipes] = useState<any[]>([]);
+
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientInput, setIngredientInput] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showWelcomeText, setShowWelcomeText] = useState<boolean>(true);
   const [servings, setServings] = useState<number | null>(null);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+
+  const {
+    recipes,
+    isLoading,
+    handleSearch,
+    loadMoreRecipes,
+    hasNextPage,
+    isFetchingNextPage,
+    error,
+  } = useRecipes(ingredients, selectedPreferences, servings);
+
   const handleAddIngredient = () => {
     if (ingredientInput.trim() === "") {
       Alert.alert("Invalid Input", "Please enter a valid ingredient.");
@@ -51,57 +61,29 @@ export default function RecipeListScreen() {
     }
     setIngredients((prev) => [...prev, ingredientInput.trim()]);
     setIngredientInput("");
+    setShowFilters(true);
   };
 
   const handleRemoveIngredient = (ingredient: string) => {
     setIngredients((prev) => prev.filter((item) => item !== ingredient));
-  };
-  const handleSetServings = (newServings: number) => {
-    setServings(newServings);
+    if (ingredients.length <= 1) {
+      setShowFilters(false);
+    }
   };
 
-  const handleSearch = async () => {
-    if (ingredients.length === 0) {
-      Alert.alert("No Ingredients", "Please add at least one ingredient.");
-      return;
-    }
-  
-    setLoading(true);
-    setError(null);
-    setShowWelcomeText(false);
-  
-    try {
-      const dietaryFilters = selectedPreferences.join(",");
-      console.log("Searching with ingredients:", ingredients.join(","));
-      console.log("Dietary Filters:", dietaryFilters);
-      let data = await fetchRecipes(ingredients.join(","), dietaryFilters);
-  
-      // Skapar detta för många queries till Apiet? Fick 402 väldigt snabbt
-      const detailedRecipes = await Promise.all(
-        data.map(async (recipe: any) => {
-          const details = await getRecipeDetails(recipe.id);
-          return details;
-        })
-      );
-  
-      if (servings) {
-        data = detailedRecipes.filter((recipe: any) => recipe.servings === servings);
-      } else {
-        data = detailedRecipes;
-      }
-      setRecipes(data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch recipes. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  const handleSearchWithFlag = () => {
+    setHasSearched(true);
+    setShowFilters(false);
+    handleSearch();
   };
 
   return (
     <View style={styles.container}>
-      <BackButton />
-      {/* Inputfält och "Add Ingredient"-knapp */}
+      <View style={styles.headerContainer}>
+        <BackButton />
+        <Text style={styles.header}>Generate Recipes</Text>
+      </View>
+
       <View style={styles.inputContainer}>
         <Image
           source={require("../../assets/icons/ingredients.png")}
@@ -121,83 +103,97 @@ export default function RecipeListScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Lista med ingredienser som piller */}
-      <View style={styles.pillContainer}>
-        {ingredients.map((ingredient, index) => (
-          <View key={index} style={styles.pill}>
-            <Text style={styles.pillText}>{ingredient}</Text>
+      <IngredientPills
+        ingredients={ingredients}
+        onRemoveIngredient={handleRemoveIngredient}
+      />
+      {showFilters && (
+        <View style={styles.overlay}>
+          <View style={styles.dropdownContainer}>
+            <IngredientPills
+              ingredients={ingredients}
+              onRemoveIngredient={handleRemoveIngredient}
+            />
+            <View style={styles.diet}>
+              <DietaryPreferenceDropdown
+                preferences={dietaryPreferences}
+                selectedPreferences={selectedPreferences}
+                onTogglePreference={togglePreference}
+              />
+              <ServingFilter onChange={setServings} />
+            </View>
             <TouchableOpacity
-              onPress={() => handleRemoveIngredient(ingredient)}
-              style={styles.pillCloseButton}
+              style={styles.searchButton}
+              onPress={handleSearchWithFlag}
             >
-              <Text style={styles.pillCloseButtonText}>✕</Text>
+              <Text style={styles.searchButtonText}>Find Recipes</Text>
             </TouchableOpacity>
           </View>
-        ))}
-      </View>
+        </View>
+      )}
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <DietaryPreferenceDropdown
-          preferences={dietaryPreferences}
-          selectedPreferences={selectedPreferences}
-          onTogglePreference={togglePreference}
-        />
-        <ServingFilter onChange={setServings} />
-      </View>
+      {!hasSearched && recipes.length === 0 && (
+        <View style={styles.placeholderContainer}>
+          <Image
+            source={require("../../assets/images/pic6.jpg")}
+            style={styles.placeholderImage}
+          />
+          <Text style={styles.placeholderText}>
+            Add ingredients to find recipes!
+          </Text>
+        </View>
+      )}
 
-      {/* Sökknapp */}
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-        <Text style={styles.searchButtonText}>Find Recipes</Text>
-      </TouchableOpacity>
-
-      {/* Laddar eller visar fel */}
-      {loading && (
+      {isLoading && (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#FF6F61" />
-          <Text style={styles.loadingText}>Loading recipes...</Text>
         </View>
       )}
-
-      {error && (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
+      {hasSearched && recipes.length > 0 && (
+        <FlatList
+          data={recipes}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ListCard
+              recipeId={item.id}
+              title={item.title}
+              image={item.image}
+              isBookmarked={bookmarkedRecipes.some(
+                (bookmark) => bookmark.recipeId === item.id
+              )}
+              onBookmarkPress={() => toggleBookmark(item)}
+              onPress={() =>
+                navigation.navigate("RecipeDetails", { recipeId: item.id })
+              }
+              showShareIcon={true}
+              onSharePress={() =>
+                handleShareRecipe({
+                  recipeId: item.id,
+                  title: item.title,
+                  image: item.image,
+                })
+              }
+            />
+          )}
+          contentContainerStyle={styles.listContent}
+          ListFooterComponent={
+            hasNextPage ? (
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  style={styles.loadMoreButton}
+                  onPress={loadMoreRecipes}
+                >
+                  {isFetchingNextPage ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Text style={styles.loadMoreButtonText}>Load More</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : null
+          }
+        />
       )}
-
-      {/* Visar recept */}
-      <FlatList
-        data={recipes}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <ListCard
-            recipeId={item.id}
-            title={item.title}
-            image={item.image}
-            isBookmarked={bookmarkedRecipes.some(
-              (bookmark) => bookmark.recipeId === item.id
-            )}
-            onBookmarkPress={() => toggleBookmark(item)}
-            onPress={() =>
-              navigation.navigate("RecipeDetails", { recipeId: item.id })
-            }
-            showShareIcon={true}
-            onSharePress={() =>
-              handleShareRecipe({
-                recipeId: item.id,
-                title: item.title,
-                image: item.image,
-              })
-            }
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-      />
     </View>
   );
 }

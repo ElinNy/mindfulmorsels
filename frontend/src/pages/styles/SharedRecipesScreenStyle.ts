@@ -4,12 +4,16 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    padding: 16,
+    paddingHorizontal: 16,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 16,
+    color:"#545454",
   },
   center: {
     flex: 1,
@@ -31,4 +35,23 @@ export const styles = StyleSheet.create({
   listItem: {
     marginBottom: 20,
   },
+  footer: {
+    marginBottom:150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  loadMoreButton: {
+    backgroundColor: "#FF6F61",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+
+  loadMoreButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
 });

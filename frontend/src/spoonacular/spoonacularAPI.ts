@@ -8,39 +8,40 @@ const apiClient = axios.create({
   },
 });
 
-export const fetchRecipes = async (query: string, diet: string): Promise<any> => {
+export const fetchRecipes = async (
+  ingredients: string,
+  dietaryFilters: string,
+  offset: number,
+  number: number
+): Promise<any[]> => {
   try {
-    console.log("Fetching recipes with query:", query, "and diet:", diet);
-    const recipes = await searchRecipes(query, diet);
-    return recipes;
+    const params: any = {
+      query: ingredients,
+      number,
+      offset,
+    };
+
+    if (dietaryFilters) {
+      params.diet = dietaryFilters;
+    }
+
+    const response = await apiClient.get("/recipes/complexSearch", { params });
+
+    if (response.data && response.data.results) {
+      return response.data.results;
+    }
+
+    console.error("No results found.");
+    return [];
   } catch (error) {
     console.error("Error fetching recipes:", error);
-    throw error;
+    throw new Error("Failed to fetch recipes. Please try again later.");
   }
 };
 
-export const searchRecipes = async (query: string, diet: string): Promise<any> => {
-  try {
-    const response = await apiClient.get("/recipes/complexSearch", {
-      params: {
-        query,
-        number: 5,
-        diet,
-      },
-    });
-    return response.data.results;
-  } catch (error) {
-    console.error("Error searching recipes:", error);
-    throw error;
-  }
-};
+
 
 export const getRecipeDetails = async (recipeId: number): Promise<any> => {
-  try {
-    const response = await apiClient.get(`/recipes/${recipeId}/information`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching recipe details:", error);
-    throw error;
-  }
+  const response = await apiClient.get(`/recipes/${recipeId}/information`);
+  return response.data;
 };
