@@ -21,7 +21,7 @@ import { usePreferences } from "../hooks/usePreferences";
 import ServingFilter from "../components/servingFilter/ServingFilter";
 import BackButton from "../components/backButton/BackButton";
 import { useRecipes } from "../hooks/useRecipes";
-import IngredientPills from "../components/ingredientPill/ingredientPill";
+import IngredientPills from "../components/ingredientPill/IngredientPill";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "Recipes">;
 
